@@ -7,13 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D8F1E2C1DB974E500C53331 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2A1DB974E500C53331 /* Main.storyboard */; };
+		5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2D1DBECC1400C53331 /* Artist.swift */; };
 		5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */; };
-		5DEFF1D01DA56C4A00BC4F19 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CF1DA56C4A00BC4F19 /* ViewController.swift */; };
-		5DEFF1D31DA56C4A00BC4F19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1D11DA56C4A00BC4F19 /* Main.storyboard */; };
+		5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */; };
 		5DEFF1D51DA56C4A00BC4F19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1D41DA56C4A00BC4F19 /* Assets.xcassets */; };
 		5DEFF1D81DA56C4A00BC4F19 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1D61DA56C4A00BC4F19 /* LaunchScreen.storyboard */; };
 		5DEFF1E31DA56C4A00BC4F19 /* OpusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1E21DA56C4A00BC4F19 /* OpusTests.swift */; };
 		5DEFF1EE1DA56C4A00BC4F19 /* OpusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1ED1DA56C4A00BC4F19 /* OpusUITests.swift */; };
+		5DEFF1FC1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */; };
+		5DEFF1FD1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */; };
+		5DEFF1FE1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */; };
+		5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2051DAC7F1F00BC4F19 /* User.swift */; };
+		5DEFF20C1DAC93B400BC4F19 /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF20B1DAC93B400BC4F19 /* NewUserViewController.swift */; };
+		5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */; };
+		5DEFF2141DAEC4DB00BC4F19 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2131DAEC4DB00BC4F19 /* DashboardViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,10 +42,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		337CDE335084BD71E190D341 /* Pods-OpusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-OpusTests/Pods-OpusTests.release.xcconfig"; sourceTree = "<group>"; };
+		5D8F1E2B1DB974E500C53331 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5D8F1E2D1DBECC1400C53331 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		5DEFF1CA1DA56C4A00BC4F19 /* Opus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Opus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5DEFF1CF1DA56C4A00BC4F19 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		5DEFF1D21DA56C4A00BC4F19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		5DEFF1D41DA56C4A00BC4F19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5DEFF1D71DA56C4A00BC4F19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5DEFF1D91DA56C4A00BC4F19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -47,6 +57,19 @@
 		5DEFF1E91DA56C4A00BC4F19 /* OpusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DEFF1ED1DA56C4A00BC4F19 /* OpusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpusUITests.swift; sourceTree = "<group>"; };
 		5DEFF1EF1DA56C4A00BC4F19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5DEFF1FF1DAB0E0F00BC4F19 /* Opus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Opus.entitlements; sourceTree = "<group>"; };
+		5DEFF2051DAC7F1F00BC4F19 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		5DEFF20B1DAC93B400BC4F19 /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
+		5DEFF20F1DAEBBC400BC4F19 /* Opus-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Opus-Bridging-Header.h"; sourceTree = "<group>"; };
+		5DEFF2101DAEBBC500BC4F19 /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
+		5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
+		5DEFF2131DAEC4DB00BC4F19 /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		9D3EFC5AA778BBF316ABC805 /* Pods-OpusUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-OpusUITests/Pods-OpusUITests.release.xcconfig"; sourceTree = "<group>"; };
+		A21DACF19CB8BA3D7349DB69 /* Pods-Opus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Opus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Opus/Pods-Opus.debug.xcconfig"; sourceTree = "<group>"; };
+		BFA6FA48457DE78CC50F2198 /* Pods-OpusUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OpusUITests/Pods-OpusUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		F3566E85E2964465D0F0A763 /* Pods-OpusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OpusTests/Pods-OpusTests.debug.xcconfig"; sourceTree = "<group>"; };
+		FC771EB473C0A29988486DAB /* Pods-Opus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Opus.release.xcconfig"; path = "Pods/Target Support Files/Pods-Opus/Pods-Opus.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +97,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		004178E04FA9C58FDB4AE1E5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A21DACF19CB8BA3D7349DB69 /* Pods-Opus.debug.xcconfig */,
+				FC771EB473C0A29988486DAB /* Pods-Opus.release.xcconfig */,
+				F3566E85E2964465D0F0A763 /* Pods-OpusTests.debug.xcconfig */,
+				337CDE335084BD71E190D341 /* Pods-OpusTests.release.xcconfig */,
+				BFA6FA48457DE78CC50F2198 /* Pods-OpusUITests.debug.xcconfig */,
+				9D3EFC5AA778BBF316ABC805 /* Pods-OpusUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		5DEFF1C11DA56C4A00BC4F19 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +117,8 @@
 				5DEFF1E11DA56C4A00BC4F19 /* OpusTests */,
 				5DEFF1EC1DA56C4A00BC4F19 /* OpusUITests */,
 				5DEFF1CB1DA56C4A00BC4F19 /* Products */,
+				004178E04FA9C58FDB4AE1E5 /* Pods */,
+				D9443A4E96992DC6E820F87E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,12 +135,14 @@
 		5DEFF1CC1DA56C4A00BC4F19 /* Opus */ = {
 			isa = PBXGroup;
 			children = (
+				5DEFF2001DAB0E4100BC4F19 /* Models */,
+				5DEFF2021DAB0E6700BC4F19 /* Views */,
+				5DEFF2011DAB0E5B00BC4F19 /* Controllers */,
+				5DEFF1FF1DAB0E0F00BC4F19 /* Opus.entitlements */,
 				5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */,
-				5DEFF1CF1DA56C4A00BC4F19 /* ViewController.swift */,
-				5DEFF1D11DA56C4A00BC4F19 /* Main.storyboard */,
 				5DEFF1D41DA56C4A00BC4F19 /* Assets.xcassets */,
-				5DEFF1D61DA56C4A00BC4F19 /* LaunchScreen.storyboard */,
 				5DEFF1D91DA56C4A00BC4F19 /* Info.plist */,
+				5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */,
 			);
 			path = Opus;
 			sourceTree = "<group>";
@@ -125,6 +165,44 @@
 			path = OpusUITests;
 			sourceTree = "<group>";
 		};
+		5DEFF2001DAB0E4100BC4F19 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5DEFF2101DAEBBC500BC4F19 /* KeychainWrapper.h */,
+				5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */,
+				5DEFF2051DAC7F1F00BC4F19 /* User.swift */,
+				5D8F1E2D1DBECC1400C53331 /* Artist.swift */,
+				5DEFF20F1DAEBBC400BC4F19 /* Opus-Bridging-Header.h */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		5DEFF2011DAB0E5B00BC4F19 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */,
+				5DEFF20B1DAC93B400BC4F19 /* NewUserViewController.swift */,
+				5DEFF2131DAEC4DB00BC4F19 /* DashboardViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		5DEFF2021DAB0E6700BC4F19 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5D8F1E2A1DB974E500C53331 /* Main.storyboard */,
+				5DEFF1D61DA56C4A00BC4F19 /* LaunchScreen.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		D9443A4E96992DC6E820F87E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +210,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5DEFF1F21DA56C4A00BC4F19 /* Build configuration list for PBXNativeTarget "Opus" */;
 			buildPhases = (
+				72E1EF4457BE9FAE71E19127 /* [CP] Check Pods Manifest.lock */,
 				5DEFF1C61DA56C4A00BC4F19 /* Sources */,
 				5DEFF1C71DA56C4A00BC4F19 /* Frameworks */,
 				5DEFF1C81DA56C4A00BC4F19 /* Resources */,
+				B0E641D88812A5E5AD876E03 /* [CP] Embed Pods Frameworks */,
+				16D5885D1778CA0B62AA2705 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -149,9 +230,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5DEFF1F51DA56C4A00BC4F19 /* Build configuration list for PBXNativeTarget "OpusTests" */;
 			buildPhases = (
+				60B80064284F257A16BECED9 /* [CP] Check Pods Manifest.lock */,
 				5DEFF1DA1DA56C4A00BC4F19 /* Sources */,
 				5DEFF1DB1DA56C4A00BC4F19 /* Frameworks */,
 				5DEFF1DC1DA56C4A00BC4F19 /* Resources */,
+				27F1C93A7F7C1543E51692CC /* [CP] Embed Pods Frameworks */,
+				7FC2852EBF3F2B60B418980C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -167,9 +251,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5DEFF1F81DA56C4A00BC4F19 /* Build configuration list for PBXNativeTarget "OpusUITests" */;
 			buildPhases = (
+				C61DF2A4F37997D5D34E571D /* [CP] Check Pods Manifest.lock */,
 				5DEFF1E51DA56C4A00BC4F19 /* Sources */,
 				5DEFF1E61DA56C4A00BC4F19 /* Frameworks */,
 				5DEFF1E71DA56C4A00BC4F19 /* Resources */,
+				F2580982CF095CCF48ABB4B2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -193,6 +279,12 @@
 				TargetAttributes = {
 					5DEFF1C91DA56C4A00BC4F19 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = Z9X5JDRV6G;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					5DEFF1DD1DA56C4A00BC4F19 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -230,8 +322,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DEFF1D81DA56C4A00BC4F19 /* LaunchScreen.storyboard in Resources */,
+				5DEFF1FC1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */,
 				5DEFF1D51DA56C4A00BC4F19 /* Assets.xcassets in Resources */,
-				5DEFF1D31DA56C4A00BC4F19 /* Main.storyboard in Resources */,
+				5D8F1E2C1DB974E500C53331 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +332,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DEFF1FD1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,18 +340,147 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DEFF1FE1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		16D5885D1778CA0B62AA2705 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Opus/Pods-Opus-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		27F1C93A7F7C1543E51692CC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OpusTests/Pods-OpusTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		60B80064284F257A16BECED9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		72E1EF4457BE9FAE71E19127 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7FC2852EBF3F2B60B418980C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OpusTests/Pods-OpusTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B0E641D88812A5E5AD876E03 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Opus/Pods-Opus-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C61DF2A4F37997D5D34E571D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F2580982CF095CCF48ABB4B2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OpusUITests/Pods-OpusUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5DEFF1C61DA56C4A00BC4F19 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DEFF1D01DA56C4A00BC4F19 /* ViewController.swift in Sources */,
+				5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */,
+				5DEFF2141DAEC4DB00BC4F19 /* DashboardViewController.swift in Sources */,
 				5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */,
+				5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */,
+				5DEFF20C1DAC93B400BC4F19 /* NewUserViewController.swift in Sources */,
+				5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */,
+				5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,10 +516,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		5DEFF1D11DA56C4A00BC4F19 /* Main.storyboard */ = {
+		5D8F1E2A1DB974E500C53331 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5DEFF1D21DA56C4A00BC4F19 /* Base */,
+				5D8F1E2B1DB974E500C53331 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -399,28 +622,47 @@
 		};
 		5DEFF1F31DA56C4A00BC4F19 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A21DACF19CB8BA3D7349DB69 /* Pods-Opus.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Opus/Opus.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Opus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = RobMWalsh.Opus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Opus/Opus-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USER_HEADER_SEARCH_PATHS = "Pods/**";
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = "Pods/**";
 			};
 			name = Debug;
 		};
 		5DEFF1F41DA56C4A00BC4F19 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FC771EB473C0A29988486DAB /* Pods-Opus.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Opus/Opus.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Opus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = RobMWalsh.Opus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Opus/Opus-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "Pods/**";
 			};
 			name = Release;
 		};
 		5DEFF1F61DA56C4A00BC4F19 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3566E85E2964465D0F0A763 /* Pods-OpusTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = OpusTests/Info.plist;
@@ -433,6 +675,7 @@
 		};
 		5DEFF1F71DA56C4A00BC4F19 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 337CDE335084BD71E190D341 /* Pods-OpusTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = OpusTests/Info.plist;
@@ -445,6 +688,7 @@
 		};
 		5DEFF1F91DA56C4A00BC4F19 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BFA6FA48457DE78CC50F2198 /* Pods-OpusUITests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = OpusUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -456,6 +700,7 @@
 		};
 		5DEFF1FA1DA56C4A00BC4F19 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D3EFC5AA778BBF316ABC805 /* Pods-OpusUITests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = OpusUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -484,6 +729,7 @@
 				5DEFF1F41DA56C4A00BC4F19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5DEFF1F51DA56C4A00BC4F19 /* Build configuration list for PBXNativeTarget "OpusTests" */ = {
 			isa = XCConfigurationList;
@@ -492,6 +738,7 @@
 				5DEFF1F71DA56C4A00BC4F19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5DEFF1F81DA56C4A00BC4F19 /* Build configuration list for PBXNativeTarget "OpusUITests" */ = {
 			isa = XCConfigurationList;
@@ -500,6 +747,7 @@
 				5DEFF1FA1DA56C4A00BC4F19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

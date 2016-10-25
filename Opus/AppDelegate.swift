@@ -7,15 +7,42 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    var storyboard: UIStoryboard?
+    override init() {
+        super.init()
+        //Google Firebase configuration
+        FIRApp.configure()
+        // not really needed unless you really need it FIRDatabase.database().persistenceEnabled = true
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        //Google Firebase configuration
+        //FIRApp.configure()
+        //Create reference to database
+        var ref: FIRDatabaseReference!
+        ref = FIRDatabase.database().reference()
+        
+        //Check if user is authenticated, if so skip log in screen
+        self.storyboard =  UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        let currentUser = FIRAuth.auth()?.currentUser
+        if currentUser != nil
+        {
+            print("User is auth'd, sending to Dashboard")
+            self.window?.rootViewController = self.storyboard?.instantiateViewControllerWithIdentifier("DashboardViewController")
+        }
+        else
+        {
+            print("No log in found, sending to log in screen")
+            self.window?.rootViewController = self.storyboard?.instantiateViewControllerWithIdentifier("MainViewController")
+        }
+        
         return true
     }
 
