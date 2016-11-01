@@ -19,9 +19,10 @@
 		5DEFF1FD1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */; };
 		5DEFF1FE1DA56CA200BC4F19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */; };
 		5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2051DAC7F1F00BC4F19 /* User.swift */; };
-		5DEFF20C1DAC93B400BC4F19 /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF20B1DAC93B400BC4F19 /* NewUserViewController.swift */; };
+		5DEFF20C1DAC93B400BC4F19 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF20B1DAC93B400BC4F19 /* UserInfoViewController.swift */; };
 		5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */; };
-		5DEFF2141DAEC4DB00BC4F19 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2131DAEC4DB00BC4F19 /* DashboardViewController.swift */; };
+		5DEFF2141DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */; };
+		5DFB1C5C1DC78F8600AD5BAC /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFB1C5B1DC78F8600AD5BAC /* Venue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,11 +61,12 @@
 		5DEFF1FB1DA56CA200BC4F19 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5DEFF1FF1DAB0E0F00BC4F19 /* Opus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Opus.entitlements; sourceTree = "<group>"; };
 		5DEFF2051DAC7F1F00BC4F19 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		5DEFF20B1DAC93B400BC4F19 /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
+		5DEFF20B1DAC93B400BC4F19 /* UserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		5DEFF20F1DAEBBC400BC4F19 /* Opus-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Opus-Bridging-Header.h"; sourceTree = "<group>"; };
 		5DEFF2101DAEBBC500BC4F19 /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
 		5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
-		5DEFF2131DAEC4DB00BC4F19 /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistDashboardViewController.swift; sourceTree = "<group>"; };
+		5DFB1C5B1DC78F8600AD5BAC /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
 		9D3EFC5AA778BBF316ABC805 /* Pods-OpusUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-OpusUITests/Pods-OpusUITests.release.xcconfig"; sourceTree = "<group>"; };
 		A21DACF19CB8BA3D7349DB69 /* Pods-Opus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Opus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Opus/Pods-Opus.debug.xcconfig"; sourceTree = "<group>"; };
 		BFA6FA48457DE78CC50F2198 /* Pods-OpusUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OpusUITests/Pods-OpusUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				5DEFF2101DAEBBC500BC4F19 /* KeychainWrapper.h */,
 				5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */,
 				5DEFF2051DAC7F1F00BC4F19 /* User.swift */,
+				5DFB1C5B1DC78F8600AD5BAC /* Venue.swift */,
 				5D8F1E2D1DBECC1400C53331 /* Artist.swift */,
 				5DEFF20F1DAEBBC400BC4F19 /* Opus-Bridging-Header.h */,
 			);
@@ -181,8 +184,8 @@
 			isa = PBXGroup;
 			children = (
 				5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */,
-				5DEFF20B1DAC93B400BC4F19 /* NewUserViewController.swift */,
-				5DEFF2131DAEC4DB00BC4F19 /* DashboardViewController.swift */,
+				5DEFF20B1DAC93B400BC4F19 /* UserInfoViewController.swift */,
+				5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 					5DEFF1C91DA56C4A00BC4F19 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = Z9X5JDRV6G;
+						LastSwiftMigration = 0810;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -288,10 +292,12 @@
 					};
 					5DEFF1DD1DA56C4A00BC4F19 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0810;
 						TestTargetID = 5DEFF1C91DA56C4A00BC4F19;
 					};
 					5DEFF1E81DA56C4A00BC4F19 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0810;
 						TestTargetID = 5DEFF1C91DA56C4A00BC4F19;
 					};
 				};
@@ -475,10 +481,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */,
-				5DEFF2141DAEC4DB00BC4F19 /* DashboardViewController.swift in Sources */,
+				5DFB1C5C1DC78F8600AD5BAC /* Venue.swift in Sources */,
+				5DEFF2141DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift in Sources */,
 				5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */,
 				5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */,
-				5DEFF20C1DAC93B400BC4F19 /* NewUserViewController.swift in Sources */,
+				5DEFF20C1DAC93B400BC4F19 /* UserInfoViewController.swift in Sources */,
 				5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */,
 				5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */,
 			);
@@ -636,6 +643,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Opus/Opus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "Pods/**";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "Pods/**";
 			};
@@ -656,6 +664,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Opus/Opus-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "Pods/**";
 			};
 			name = Release;
@@ -669,6 +678,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = RobMWalsh.OpusTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Opus.app/Opus";
 			};
 			name = Debug;
@@ -682,6 +692,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = RobMWalsh.OpusTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Opus.app/Opus";
 			};
 			name = Release;
@@ -694,6 +705,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = RobMWalsh.OpusUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Opus;
 			};
 			name = Debug;
@@ -706,6 +718,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = RobMWalsh.OpusUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Opus;
 			};
 			name = Release;

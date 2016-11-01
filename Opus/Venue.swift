@@ -1,8 +1,8 @@
 //
-//  Artist.swift
+//  Venue.swift
 //  Opus
 //
-//  Created by Rob on 10/24/16.
+//  Created by Rob on 10/31/16.
 //  Copyright © 2016 RobMWalsh. All rights reserved.
 //
 
@@ -12,49 +12,38 @@ import CoreLocation
 import UIKit
 import Firebase
 
-class Artist : User {
+class Venue : User {
     
-    var gender: String = ""
-    var genre: String = ""
-    var type: String = ""
-    var dob: String = ""
-    //A reference to the users node in the database
-    fileprivate var _ArtistRef = FIRDatabase.database().reference().child("artists")
-    //A reference to the storage buckets within firebase
-    fileprivate var _StorageRef = FIRStorage.storage().reference(forURL: "gs://opus-f0c01.appspot.com")
-    
+    var address: String = ""
+    var capacity: Int = 0
     
     override init () {
         
         super.init()
         //Override the database reference to refer to the artist tree
-        self._Ref = FIRDatabase.database().reference().child("artists")
+        self._Ref = FIRDatabase.database().reference().child("venues")
     }
     
-    func RetrieveArtistForUser(_ UID: String){
+    func RetrieveVenueForUser(_ UID: String){
         //Retrieve user from DB with given UID
         self._Ref.child(UID).observeSingleEvent(of: .value, with: { (snapshot) in
-            //print("Retrieved the below Artist and attributes:")
-           // print(snapshot.value)
+            //print("Retrieved the below Venue and attributes:")
+            //print(snapshot.value)
             //Need to check each prop to see if the key exists before extracting and setting
+            //If we found something
             if snapshot.value is NSNull {
-                print("No Artist found")
+                print("No Venue found")
             }else{
-                print("Retrieved artist data for user ", "\(UID)")
+                print("Retrieved venue data for user ", "\(UID)")
                 self.uid = UID
-            
-                if let val = (snapshot.value as AnyObject).value(forKey: "gender"){
-                    self.gender = val as! String}
-                if let val = (snapshot.value as AnyObject).value(forKey: "genre"){
-                    self.genre = (val as! String)}
-                if let val = (snapshot.value as AnyObject).value(forKey: "type"){
-                    self.type = (val as! String)}
-                if let val = (snapshot.value as AnyObject).value(forKey: "dob"){
-                    self.dob = (val as! String)}
+                if let val = (snapshot.value as AnyObject).value(forKey: "address"){
+                    self.address = val as! String}
+                if let val = (snapshot.value as AnyObject).value(forKey: "capacity"){
+                    self.capacity = (val as! Int)}
             
                 //Post notification that the user was initalized from the database succesfully, include the user info success message
                 let nc = NotificationCenter.default
-                nc.post(name: Notification.Name(rawValue: "ArtistInit"),
+                nc.post(name: Notification.Name(rawValue: "VenueInit"),
                     object: nil,
                     userInfo: ["success": true])
             
@@ -66,13 +55,12 @@ class Artist : User {
             print(error.localizedDescription)
             //Post notification that the user was initalized from the database succesfully, don't include the success message
             let nc = NotificationCenter.default
-            nc.post(name: Notification.Name(rawValue: "ArtistInit"),
+            nc.post(name: Notification.Name(rawValue: "VenueInit"),
                                     object: nil,
                                     userInfo: nil)
         }
-
+        
     }
-    
 
     override func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character
@@ -97,9 +85,11 @@ class Artist : User {
                 }
             }
         }
-   
+        
         //print(dict)
         return dict
     }
 
+    
+    
 }

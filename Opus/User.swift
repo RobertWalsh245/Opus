@@ -15,11 +15,12 @@ class User {
 //NOTE: Any property declared with a leading "_" character will be excluded from the JSON dicionary creation function
     
     //A reference to the users node in the database
-    let _UserRef = FIRDatabase.database().reference().child("users")
+    //let _UserRef = FIRDatabase.database().reference().child("users")
     //A reference to the root of User
-    private var _Ref = FIRDatabase.database().reference()
+    var _Ref = FIRDatabase.database().reference()
     //A reference to the storage buckets within firebase
-    private var _StorageRef = FIRStorage.storage().referenceForURL("gs://opus-f0c01.appspot.com")
+    fileprivate var _StorageRef = FIRStorage.storage().reference(forURL: "gs://opus-f0c01.appspot.com")
+    fileprivate var _UserRef = FIRDatabase.database().reference().child("users")
     
     let _PhotoLimit = 3
     
@@ -33,15 +34,16 @@ class User {
             
             //Loop dictionary of all properties and check their value
             for (key, value) in UserDict {
-                if UserDict[key]?.value == "" {
+                //print(key, value)
+                if value as? String == "" {
                     Complete = false
                 }
             }
             print("Account complete = ", "\(Complete)" )
             return Complete
         }
-        set(newValue) {
-            //code to execute
+       set(newValue) {
+            //self.accountcomplete = newValue
         }
     }
     var name: String = ""
@@ -51,7 +53,8 @@ class User {
     var lat: Double = 0.0
     var lon: Double = 0.0
     var photos: [String] = []
-    var dob: String = ""
+    
+    
     
     //Potential Methods
     //func update GPS coordinates
@@ -63,58 +66,62 @@ class User {
         
     }
     
-    init(UID: String){
+    func RetrieveWithID (_ UID: String) {
+        
         //Retrieve user from DB with given UID
-        _UserRef.child(UID).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            print("Retrieved the below user and attributes:")
-            print(snapshot.value)
+        _Ref.child(UID).observeSingleEvent(of: .value, with: { (snapshot) in
+            //print("Retrieved the below user and attributes:")
+            //print(snapshot.value)
             //Need to check each prop to see if the key exists before extracting and setting
-           
+            
             self.uid = UID
             
-            if let val = snapshot.value?.valueForKey("accountcomplete"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "accountcomplete"){
                 self.accountcomplete = val as! Bool}
-            if let val = snapshot.value?.valueForKey("name"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "name"){
                 self.name = (val as! String)}
-            if let val = snapshot.value?.valueForKey("email"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "email"){
                 self.email = (val as! String)}
-            if let val = snapshot.value?.valueForKey("bio"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "bio"){
                 self.bio = (val as! String)}
-            if let val = snapshot.value?.valueForKey("region"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "region"){
                 self.region = (val as! String)}
-            if let val = snapshot.value?.valueForKey("lat"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "lat"){
                 self.lat = (val as! Double)}
-            if let val = snapshot.value?.valueForKey("lon"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "lon"){
                 self.lon = (val as! Double)}
-            if let val = snapshot.value?.valueForKey("photos"){
+            if let val = (snapshot.value as AnyObject).value(forKey: "photos"){
                 self.photos = (val as! Array <String>)}
-            if let val = snapshot.value?.valueForKey("dob"){
-                self.dob = (val as! String)}
+            
+            
             //Post notification that the user was initalized from the database succesfully, include the user info success message
-            let nc = NSNotificationCenter.defaultCenter()
-            nc.postNotificationName("UserInit",
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "UserInit"),
                 object: nil,
                 userInfo: ["success": true])
         }) { (error) in
             print(error.localizedDescription)
             //Post notification that the user was initalized from the database succesfully, don't include the success message
-            let nc = NSNotificationCenter.defaultCenter()
-            nc.postNotificationName("UserInit",
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "UserInit"),
                                     object: nil,
                                     userInfo: nil)
         }
-        
-        
-    }
     
+    }
+ 
     func CreateInDatabase(){
+        self.uid = (FIRAuth.auth()?.currentUser?.uid)!
+        self.email = (FIRAuth.auth()?.currentUser?.email)!
+        
         //Check for values in 2 mandatory properties before continuing
-        if(!uid.isEmpty && !email.isEmpty){
+        if(!self.uid.isEmpty && !self.email.isEmpty){
             
-            //Creates a new node under "Users" equal to the UID of this user object
-            let NewUserRef = self._UserRef.child(uid)
-            //Place attributes in dict to be passed to FIrebase
-            let UserDict: AnyObject = ["email": email,
+            //Creates a new node under current _Ref equal to the UID of this user object
+            let NewUserRef = self._Ref.child(uid)
+            //Place attributes in dict to be passed to Firebase
+            //let UserDict = [Any?]()
+            let UserDict: [String: Any] =  ["email": email,
                              "accountcomplete": accountcomplete]
             //Set the Values in DB
             NewUserRef.setValue(UserDict)
@@ -132,11 +139,11 @@ class User {
         if(!uid.isEmpty && !email.isEmpty){
             
             //Reference to the UID of this user object
-            let NewUserRef = self._UserRef.child(uid)
+            let NewUserRef = self._Ref.child(uid)
             //Place attributes in dict to be passed to Firebase
             let UserDict = self.toDict()
             //Set the Values in DB
-            NewUserRef.setValue(UserDict)
+            NewUserRef.updateChildValues(UserDict)
             print("Updated details for user ", "\(uid)", " in database")
         }else{
             print("No email and/or UID. User not updated in database")
@@ -144,7 +151,7 @@ class User {
 
     }
     
-    func SavePhoto(image: UIImage){
+    func SavePhoto(_ image: UIImage){
         //Check if 3 photos already exist
         let imgCount = self.photos.count
         if imgCount >= self._PhotoLimit {
@@ -152,16 +159,16 @@ class User {
         }else{
             //Make sure we have a UID
             if(!uid.isEmpty){
-                var data = NSData()
+                var data = Data()
                 data = UIImageJPEGRepresentation(image, 0.8)!
                 // set upload path
                 let filePath = "\(FIRAuth.auth()!.currentUser!.uid)/\("image" + String(imgCount + 1))"
                 
-                print(filePath)
+                //print(filePath)
                 let metaData = FIRStorageMetadata()
                 metaData.contentType = "image/jpg"
                 
-                self._StorageRef.child(filePath).putData(data, metadata: metaData){(metaData,error) in
+                self._StorageRef.child(filePath).put(data, metadata: metaData){(metaData,error) in
                     if let error = error {
                         print(error.localizedDescription)
                         return
@@ -180,15 +187,47 @@ class User {
             
         }
         
-        func RetrievePhoto(URL: String) {
-            print("Retrieving photo from URL")
-            
-        }
-        
-        //Updated all img slots in dict with the correct URLs
-        //Save all urls to database
-        
     }
+    
+    func RetrievePhoto(_ URL: String) -> UIImage {
+        print("Retrieving photo from URL")
+        var image: UIImage?
+        FIRStorage.storage().reference(forURL: URL).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
+             image = UIImage(data: data!)
+        })
+        return image!
+    }
+        
+   /* func RetrieveArtists() {
+            print("Retrieving Artists")
+            
+            let ArtistRef = _UserRef.child(self.uid).child("artists")
+            
+            let query1 = ArtistRef.queryOrderedByChild("uid")
+            let query2 = query1.queryEqualToValue(self.uid)
+            
+            //Listen for changes to the users artists
+            query2.observeEventType(.Value, withBlock: { (snapshot) in
+                print("Retrieved below artists from User")
+                print(snapshot.value)
+                
+                
+                //Post notification that the user was initalized from the database succesfully, include the user info success message
+                //let nc = NSNotificationCenter.defaultCenter()
+                //nc.postNotificationName("UserInit",
+                   // object: nil,
+                   // userInfo: ["success": true])
+                }) { (error) in
+                    print(error.localizedDescription)
+                    //Post notification that the user was initalized from the database succesfully, don't include the success message
+                    //let nc = NSNotificationCenter.defaultCenter()
+                    //nc.postNotificationName("UserInit",
+                                      //  object: nil,
+                                       // userInfo: nil)
+                }
+
+            
+    } */
     
     func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character
@@ -203,7 +242,7 @@ class User {
                 }
             }
         }
-        print(dict)
+      //  print(dict)
         return dict
     }
     
