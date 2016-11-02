@@ -14,8 +14,12 @@ import CoreLocation
 
 class ArtistDashboardViewController: UIViewController {
 
+    
+    @IBOutlet var lblBio: UILabel!
+    @IBOutlet var lblGenreType: UILabel!
     @IBOutlet fileprivate var lblWelcome: UILabel!
-    @IBOutlet var ImgProfPic: UIImageView!
+    @IBOutlet var imgProfPic: UIImageView!
+    @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     
     var artist: Artist! = Artist()
     
@@ -26,6 +30,10 @@ class ArtistDashboardViewController: UIViewController {
                        selector: #selector(self.UserWasInit),
                        name: NSNotification.Name(rawValue: "UserInit"),
                        object: nil)
+        UITabBar.appearance().barTintColor = UIColor.black
+      UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName : UIColor.white], for: .normal)
+        
+        
     }
     deinit {
         print("Deinit for ArtistDashboard called")
@@ -66,16 +74,7 @@ class ArtistDashboardViewController: UIViewController {
         performSegue(withIdentifier: "UserInfo", sender: UIViewController.self)
     }
     
-    @IBAction func btnNewArtistPressed(_ sender: UIButton) {
-        print("New Artist Pressed")
-        
-        //Create new user object
-        let UID = FIRAuth.auth()?.currentUser?.uid
-        let newArtist =  Artist()
-        newArtist.uid = UID!
-        print(newArtist.uid)
-        newArtist.CreateInDatabase()
-    }
+   
     @IBAction func btnLogoutPressed(_ sender: AnyObject) {
         print("Logout Pressed")
         //Push to log in view controller
@@ -99,12 +98,20 @@ class ArtistDashboardViewController: UIViewController {
     
     func DisplayUserInfo() {
         print("Displaying user data to view ArtistDashboard")
-        lblWelcome.text = "Welcome " + artist.name
-        
+        lblWelcome.text = "Welcome " + artist.name + "!"
+        lblGenreType.text = artist.genre + " " + artist.type
+        lblBio.lineBreakMode = .byWordWrapping
+        lblBio.numberOfLines = 0
+        lblBio.text = artist.bio
+        //withMaxSize: 25 * 1024 * 1024,
         if self.artist.photos.count > 0 {
+            self.ActivityIndicator.startAnimating()
             FIRStorage.storage().reference(forURL: self.artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
                 let image = UIImage(data: data!)
-                self.ImgProfPic.image = image
+                self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.size.width / 2
+                self.imgProfPic.contentMode = .scaleAspectFill
+                self.ActivityIndicator.stopAnimating()
+                self.imgProfPic.image = image
             })
         }
 

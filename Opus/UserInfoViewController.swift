@@ -11,9 +11,10 @@ import Firebase
 import CoreLocation
 //SHould be one entry view that updates based on whether you are a vendor or artist otherwise alot of duplicated code
 
-class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationManagerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
-
-
+class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationManagerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource  {
+    
+    
+    @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var txtName: UITextField!
     @IBOutlet var txtBio: UITextView!
     @IBOutlet var btnLocationServices: UIButton!
@@ -26,6 +27,10 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     @IBOutlet var txtGender: UITextField!
     @IBOutlet var txtGenre: UITextField!
     @IBOutlet var txtArtistType: UITextField!
+    
+    let ArtistTypes = ["Band", "Duet", "Solo Act"]
+    let GenreTypes = ["Alternative",  "Classical", "Electronic", "Heavy Metal", "Hip Hop", "Rock"]
+    let GenderTypes = ["Male", "Female"]
     
 //Venue Outlets
     @IBOutlet var VenueDetailView: UIView!
@@ -43,36 +48,25 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     var userType: String = ""
     let locationManager = CLLocationManager()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        //Subscribe to observe the notification that that the user was Initialized
-        let nc = NotificationCenter.default
-        nc.addObserver(self,
-                       selector: #selector(self.ArtistWasInit),
-                       name: NSNotification.Name(rawValue: "ArtistInit"),
-                       object: nil)
-        nc.addObserver(self,
-                       selector: #selector(self.VenueWasInit),
-                       name: NSNotification.Name(rawValue: "VenueInit"),
-                       object: nil)
-        nc.addObserver(self,
-                       selector: #selector(self.UserWasInit),
-                       name: NSNotification.Name(rawValue: "UserInit"),
-                       object: nil)
-    }
-    deinit {
-        print("Deinit for UserInfo called")
-        //Removes listener of Notifications when de init
-        NotificationCenter.default.removeObserver(self)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        print("ViewWillDisappear called for UserInfo")
-        NotificationCenter.default.removeObserver(self)
-        super.viewWillDisappear(animated)
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Loaded UserInfoViewController")
+        
+        //Initialize picker views and link them to their textviews. Tag will tell the picker view methods below which data source to use
+        let TypePickerView = UIPickerView()
+        TypePickerView.delegate = self
+        TypePickerView.tag = 0
+        txtArtistType.inputView = TypePickerView
+        
+        let GenrePickerView = UIPickerView()
+        GenrePickerView.delegate = self
+        GenrePickerView.tag = 1
+        txtGenre.inputView = GenrePickerView
+        
+        let GenderPickerView = UIPickerView()
+        GenderPickerView.delegate = self
+        GenderPickerView.tag = 2
+        txtGender.inputView = GenderPickerView
         
         picker.delegate = self
         locationManager.delegate = self
@@ -256,8 +250,10 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             txtArtistType.text = artist.type
             
             if artist.photos.count > 0 {
+                ActivityIndicator.startAnimating()
                 FIRStorage.storage().reference(forURL: artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
                     let image = UIImage(data: data!)
+                    self.ActivityIndicator.stopAnimating()
                     self.imgProfPic.image = image
                 })
             }
@@ -273,8 +269,10 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             txtAddress.text = venue.address
             
             if venue.photos.count > 0 {
+                ActivityIndicator.startAnimating()
                 FIRStorage.storage().reference(forURL: venue.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
                     let image = UIImage(data: data!)
+                    self.ActivityIndicator.stopAnimating()
                     self.imgProfPic.image = image
                 })
             }
@@ -320,9 +318,60 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             break
         }
     }
+//Picker Views
+    public func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    internal func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if pickerView.tag == 0 {
+            return ArtistTypes.count
+        }else if pickerView.tag == 1 {
+            return GenreTypes.count
+        }else if pickerView.tag == 2 {
+            return GenderTypes.count
+        }
+        return 1
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if pickerView.tag == 0 {
+            return ArtistTypes[row]
+        }else if pickerView.tag == 1 {
+            return GenreTypes[row]
+        }else if pickerView.tag == 2 {
+            return GenderTypes[row]
+        }
+        
+        return ""
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        if pickerView.tag == 0 {
+            txtArtistType.text = ArtistTypes[row]
+        }else if pickerView.tag == 1 {
+            txtGenre.text = GenreTypes[row]
+        }else if pickerView.tag == 2 {
+            txtGender.text = GenderTypes[row]
+        }
+    }
+    
+    @IBAction func txtArtistTypeEditingDidBegin(_ sender: UITextField) {
+        //view.endEditing(true)
+        
+        
+    }
+    
+    
+    
+    @IBAction func txtDOBEditingDidEnd(_ sender: UITextView) {
+        self.Save()
+    }
     
     func InitialFormatting() {
         //Called at view load
+        
+        //txtBio rounded corners
+        //txtBio.layer.cornerRadius = 5
+        
         
         //Border bio box
         self.txtBio.layer.borderWidth = 1
@@ -335,6 +384,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.height/2
         self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.width/2
         self.imgProfPic.clipsToBounds = true
+        self.imgProfPic.contentMode = .scaleAspectFill
         
         //Hide / Unhide Artist and Venue detail views
         if self.userType == "artist" {
@@ -346,15 +396,18 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             self.VenueDetailView.isHidden = false
         }
     }
+       
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let newText = (txtBio.text as NSString).replacingCharacters(in: range, with: text)
+        let numberOfChars = newText.characters.count // for Swift use count(newText)
+        print(numberOfChars)
+        return numberOfChars < 150
+    }
     
        //Calls this function when the tap is recognized.
     func dismissKeyboard() {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
-
         view.endEditing(true)
-        
-        //Call to save all the data for the user
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -369,11 +422,40 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         self.txtDOB.text = strDate
     }
 
-    @IBAction func txtDOBEditingDidEnd(_ sender: AnyObject) {
-        self.Save()
+ 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //Subscribe to observe the notification that that the user was Initialized
+        let nc = NotificationCenter.default
+        nc.addObserver(self,
+                       selector: #selector(self.ArtistWasInit),
+                       name: NSNotification.Name(rawValue: "ArtistInit"),
+                       object: nil)
+        nc.addObserver(self,
+                       selector: #selector(self.VenueWasInit),
+                       name: NSNotification.Name(rawValue: "VenueInit"),
+                       object: nil)
+        nc.addObserver(self,
+                       selector: #selector(self.UserWasInit),
+                       name: NSNotification.Name(rawValue: "UserInit"),
+                       object: nil)
+        
+        
+        
+    }
+   
+    
+    deinit {
+        print("Deinit for UserInfo called")
+        //Removes listener of Notifications when de init
+        NotificationCenter.default.removeObserver(self)
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        print("ViewWillDisappear called for UserInfo")
+        NotificationCenter.default.removeObserver(self)
+        super.viewWillDisappear(animated)
     }
     
-  
     
     /*
     // MARK: - Navigation
