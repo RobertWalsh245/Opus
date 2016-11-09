@@ -31,6 +31,20 @@ class Artist : User {
         self._Ref = FIRDatabase.database().reference().child("artists")
     }
     
+    
+    override func CreateInDatabase() {
+        //Call the super class method to create the artist in the database
+        super.CreateInDatabase()
+        
+        //Create a reference to the UID as being an artist under the user tree
+        let NewUserRef = super._UserRef.child(uid)
+        //Place attributes in dict to be passed to Firebase
+        let UserDict: [String: Any] =  ["type": "artist"]
+        //Set the Values in DB
+        NewUserRef.setValue(UserDict)
+        
+    }
+    
     func RetrieveArtistForUser(_ UID: String){
         //Retrieve user from DB with given UID
         self._Ref.child(UID).observeSingleEvent(of: .value, with: { (snapshot) in

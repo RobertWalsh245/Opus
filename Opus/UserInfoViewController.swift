@@ -39,6 +39,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     
     var _Ref = FIRDatabase.database().reference()
     
+    
     let picker = UIImagePickerController()
     var lat: Double! = 0.0
     var lon: Double! = 0.0
@@ -79,19 +80,28 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         
         
         
-        //Do any additional setup after loading the view.
-        let UID = FIRAuth.auth()?.currentUser?.uid
-        if  UID != nil {
-            print("Log in found. Fetching data for UID ", "\(UID)")
-            
-            //Attempt to fetch user from both venue and artist tree. Succesful notification will kick of the remaining neccesary load ing
-            self.artist.RetrieveArtistForUser(UID!)
-            self.venue.RetrieveVenueForUser(UID!)
-            
-        }else{
-            //if No UID found in auth, push back to log in screen
-            print("No Logged in UID found, returning to log in screen")
         }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //Subscribe to observe the notification that that the user was Initialized
+        let nc = NotificationCenter.default
+        nc.addObserver(self,
+                       selector: #selector(self.ArtistWasInit),
+                       name: NSNotification.Name(rawValue: "ArtistInit"),
+                       object: nil)
+        nc.addObserver(self,
+                       selector: #selector(self.VenueWasInit),
+                       name: NSNotification.Name(rawValue: "VenueInit"),
+                       object: nil)
+        nc.addObserver(self,
+                       selector: #selector(self.UserWasInit),
+                       name: NSNotification.Name(rawValue: "UserInit"),
+                       object: nil)
+        
+        self.DetermineUserType()
+        
+        
     }
     
 //Outlets
@@ -104,7 +114,12 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     @IBAction func btnNextPressed(_ sender: UIButton) {
         print("Next Pressed")
         self.Save()
-        performSegue(withIdentifier: "Dashboard", sender: UIViewController.self)
+        if self.userType == "artist" {
+           performSegue(withIdentifier: "ArtistDashboard", sender: UIViewController.self)
+        }else if self.userType == "venue" {
+            performSegue(withIdentifier: "VenueDashboard", sender: UIViewController.self)
+        }
+        
     }
     @IBAction func txtDOBBeganEditing(_ sender: UITextView) {
         
@@ -115,6 +130,13 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         datePickerView.minimumDate = (Calendar.current as NSCalendar).date(byAdding: .year, value: -100, to: Date(), options: [])
         sender.inputView = datePickerView
         datePickerView.addTarget(self, action: #selector(self.datePickerChanged), for: UIControlEvents.valueChanged)
+    }
+    func datePickerChanged(_ datePicker:UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateStyle = DateFormatter.Style.long
+        let strDate = dateFormatter.string(from: datePicker.date)
+        self.txtDOB.text = strDate
     }
     @IBAction func txtEditingEnded(_ sender: UITextField) {
         print("Textbox did end editing")
@@ -162,7 +184,37 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
+//
 //Functions
+//
+    
+//Initalization
+    func DetermineUserType(){
+        print("Determining User Type")
+        let UID = FIRAuth.auth()?.currentUser?.uid
+        if  UID != nil {
+            print("Log in found. Fetching data for UID ", "\(UID)")
+            //Check user tree for type of user
+            _Ref.child("users").child(UID!).observeSingleEvent(of: .value, with: { (snapshot) in
+                //print("Retrieved the below user and attributes:")
+                //print(snapshot.value)
+                if let val = (snapshot.value as AnyObject).value(forKey: "type"){
+                    self.userType = val as! String}
+                
+                if self.userType == "artist" {
+                    self.artist.RetrieveArtistForUser(UID!)
+                }else if self.userType == "venue" {
+                    self.venue.RetrieveVenueForUser(UID!)
+                }
+            }) { (error) in
+                print(error.localizedDescription)
+            }
+            //Attempt to fetch user from both venue and artist tree. Succesful notification will kick of the remaining neccesary load ing
+        }else{
+            //if No UID found in auth, push back to log in screen
+            print("No Logged in UID found, returning to log in screen")
+        }
+    }
     func ArtistWasInit(_ notification: Notification) {
         //Catches notification from user class
         if notification.userInfo!["success"] != nil  {
@@ -202,7 +254,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     }
 
     
-    //SHould be single property of artist or venue
+
     func Save() {
         //Called whenever editing on text box ends
         if (self.userType == "artist"){
@@ -224,7 +276,11 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             venue.name = txtName.text!
             venue.bio = txtBio.text!
             venue.address = txtAddress.text!
-            venue.capacity = Int(txtCapacity.text!)!
+            //Need to check if valid number entered
+            if Int(txtCapacity.text!) != nil
+            {
+                venue.capacity = Int(txtCapacity.text!)!
+            }
             venue.lat = self.lat
             venue.lon = self.lon
             venue.UpdateInDatabase()
@@ -238,8 +294,6 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         //Display whatever data is available
         if self.userType == "artist" {
             //Hide and unhide user type specific fields
-            
-            
             print("Displaying Artist info to view UserInfo")
             //It's an artist
             txtName.text = artist.name
@@ -265,7 +319,9 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             
             txtName.text = venue.name
             txtBio.text = venue.bio
-            txtCapacity.text = String(venue.capacity)
+            if venue.capacity > 0 {
+                txtCapacity.text = String(venue.capacity)
+            }
             txtAddress.text = venue.address
             
             if venue.photos.count > 0 {
@@ -414,35 +470,10 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    func datePickerChanged(_ datePicker:UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        
-        dateFormatter.dateStyle = DateFormatter.Style.long
-        let strDate = dateFormatter.string(from: datePicker.date)
-        self.txtDOB.text = strDate
-    }
+   
 
  
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        //Subscribe to observe the notification that that the user was Initialized
-        let nc = NotificationCenter.default
-        nc.addObserver(self,
-                       selector: #selector(self.ArtistWasInit),
-                       name: NSNotification.Name(rawValue: "ArtistInit"),
-                       object: nil)
-        nc.addObserver(self,
-                       selector: #selector(self.VenueWasInit),
-                       name: NSNotification.Name(rawValue: "VenueInit"),
-                       object: nil)
-        nc.addObserver(self,
-                       selector: #selector(self.UserWasInit),
-                       name: NSNotification.Name(rawValue: "UserInit"),
-                       object: nil)
-        
-        
-        
-    }
+
    
     
     deinit {

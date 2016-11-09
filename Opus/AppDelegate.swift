@@ -8,44 +8,33 @@
 
 import UIKit
 import Firebase
+//import IQKeyboardManagerSwift
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
     var storyboard: UIStoryboard?
+    
     override init() {
         super.init()
         //Google Firebase configuration
         FIRApp.configure()
         // not really needed unless you really need it FIRDatabase.database().persistenceEnabled = true
+        
+        
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         //Google Firebase configuration
-        //FIRApp.configure()
-        //Create reference to database
-        var ref: FIRDatabaseReference!
-        ref = FIRDatabase.database().reference()
-        
-        //Check if user is authenticated, if so skip log in screen
-        self.storyboard =  UIStoryboard(name: "Main", bundle: Bundle.main)
-        let currentUser = FIRAuth.auth()?.currentUser
-        if currentUser != nil
-        {
-            print("User is auth'd, sending to Dashboard")
-            self.window?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "ArtistDashboardViewController")
-        }
-        else
-        {
-            print("No log in found, sending to log in screen")
-            self.window?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "MainViewController")
-        }
+        UIApplication.shared.statusBarStyle = .lightContent
         
         return true
     }
-
+    
+    
+        
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

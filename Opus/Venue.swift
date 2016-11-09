@@ -24,6 +24,19 @@ class Venue : User {
         self._Ref = FIRDatabase.database().reference().child("venues")
     }
     
+    override func CreateInDatabase() {
+        //Call the super class method to create the venue in the database
+        super.CreateInDatabase()
+        
+        
+        //Create a reference to the UID as being an venue under the user tree
+        let NewUserRef = super._UserRef.child(uid)
+        //Place attributes in dict to be passed to Firebase
+        let UserDict: [String: Any] =  ["type": "venue"]
+        //Set the Values in DB
+        NewUserRef.setValue(UserDict)
+    }
+    
     func RetrieveVenueForUser(_ UID: String){
         //Retrieve user from DB with given UID
         self._Ref.child(UID).observeSingleEvent(of: .value, with: { (snapshot) in

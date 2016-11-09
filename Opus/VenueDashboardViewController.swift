@@ -1,8 +1,8 @@
 //
-//  DashboardViewController.swift
+//  VenueDashboardViewController.swift
 //  Opus
 //
-//  Created by Rob on 10/12/16.
+//  Created by Rob on 11/3/16.
 //  Copyright © 2016 RobMWalsh. All rights reserved.
 //
 
@@ -12,8 +12,8 @@ import CoreLocation
 
 
 
-class ArtistDashboardViewController: UIViewController {
-
+class VenueDashboardViewController: UIViewController {
+    
     
     @IBOutlet var lblBio: UILabel!
     @IBOutlet var lblGenreType: UILabel!
@@ -21,7 +21,7 @@ class ArtistDashboardViewController: UIViewController {
     @IBOutlet var imgProfPic: UIImageView!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     
-    var artist: Artist! = Artist()
+    var venue: Venue! = Venue()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -31,7 +31,7 @@ class ArtistDashboardViewController: UIViewController {
                        name: NSNotification.Name(rawValue: "UserInit"),
                        object: nil)
         UITabBar.appearance().barTintColor = UIColor.black
-      UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName : UIColor.white], for: .normal)
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName : UIColor.white], for: .normal)
         
         
     }
@@ -51,7 +51,7 @@ class ArtistDashboardViewController: UIViewController {
         lblGenreType.text = ""
         lblWelcome.text = ""
         // Do any additional setup after loading the view, typically from a nib.
-        print("Loaded Artist Dashboard view controller")
+        print("Loaded Venue Dashboard view controller")
         
         //Looks for single or multiple taps to dismiss keyboard.
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MainViewController.dismissKeyboard))
@@ -62,13 +62,13 @@ class ArtistDashboardViewController: UIViewController {
         let UID = FIRAuth.auth()?.currentUser?.uid
         if  UID != nil {
             print("Log in found. Fetching data for UID ", "\(UID)")
-            self.artist?.RetrieveArtistForUser(UID!)
+            self.venue?.RetrieveVenueForUser(UID!)
         }else{
             //if No UID found in auth, push back to log in screen
             print("No Logged in UID found, returning to log in screen")
         }
-
-
+        
+        
     }
     
     @IBAction func btnEditPressed(_ sender: UIButton) {
@@ -76,22 +76,20 @@ class ArtistDashboardViewController: UIViewController {
         performSegue(withIdentifier: "UserInfo", sender: UIViewController.self)
     }
     
-   
+    
     @IBAction func btnLogoutPressed(_ sender: AnyObject) {
         print("Logout Pressed")
         //Push to log in view controller
         //let secondViewController = self.storyboard!.instantiateViewControllerWithIdentifier("MainViewController") as! MainViewController
         //self.navigationController!.pushViewController(secondViewController, animated: true)
-        
         try! FIRAuth.auth()!.signOut()
-        
         performSegue(withIdentifier: "Logout", sender: UIViewController.self)
     }
     
     func UserWasInit(_ notification: Notification) {
         //Catches notification from user class
         if notification.userInfo!["success"] != nil  {
-            print("User was initialized successfully on ArtistDashboard")
+            print("User was initialized successfully on VenueDashboard")
             //The user was succesfully initalized, display the data to the user
             self.DisplayUserInfo()
         }else{
@@ -101,16 +99,16 @@ class ArtistDashboardViewController: UIViewController {
     }
     
     func DisplayUserInfo() {
-        print("Displaying user data to view ArtistDashboard")
-        lblWelcome.text = "Welcome " + artist.name + "!"
-        lblGenreType.text = artist.genre + " " + artist.type
+        print("Displaying user data to view VenueDashboard")
+        lblWelcome.text = "Welcome " + venue.name + "!"
+        
         lblBio.lineBreakMode = .byWordWrapping
         lblBio.numberOfLines = 0
-        lblBio.text = artist.bio
+        lblBio.text = venue.bio
         //withMaxSize: 25 * 1024 * 1024,
-        if self.artist.photos.count > 0 {
+        if self.venue.photos.count > 0 {
             self.ActivityIndicator.startAnimating()
-            FIRStorage.storage().reference(forURL: self.artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
+            FIRStorage.storage().reference(forURL: self.venue.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
                 let image = UIImage(data: data!)
                 self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.size.width / 2
                 self.imgProfPic.contentMode = .scaleAspectFill
@@ -118,7 +116,7 @@ class ArtistDashboardViewController: UIViewController {
                 self.imgProfPic.image = image
             })
         }
-
+        
         
     }
     

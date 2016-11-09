@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D398D171DCBAE4100A5EA57 /* Gig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D398D161DCBAE4000A5EA57 /* Gig.swift */; };
+		5D398D1B1DCBBC2200A5EA57 /* VenueDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D398D1A1DCBBC2200A5EA57 /* VenueDashboardViewController.swift */; };
+		5D398D1D1DD1373D00A5EA57 /* GigInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D398D1C1DD1373D00A5EA57 /* GigInfoViewController.swift */; };
 		5D8F1E2C1DB974E500C53331 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2A1DB974E500C53331 /* Main.storyboard */; };
 		5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2D1DBECC1400C53331 /* Artist.swift */; };
 		5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */; };
@@ -44,6 +47,9 @@
 
 /* Begin PBXFileReference section */
 		337CDE335084BD71E190D341 /* Pods-OpusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpusTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-OpusTests/Pods-OpusTests.release.xcconfig"; sourceTree = "<group>"; };
+		5D398D161DCBAE4000A5EA57 /* Gig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gig.swift; sourceTree = "<group>"; };
+		5D398D1A1DCBBC2200A5EA57 /* VenueDashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueDashboardViewController.swift; sourceTree = "<group>"; };
+		5D398D1C1DD1373D00A5EA57 /* GigInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigInfoViewController.swift; sourceTree = "<group>"; };
 		5D8F1E2B1DB974E500C53331 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5D8F1E2D1DBECC1400C53331 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		5DEFF1CA1DA56C4A00BC4F19 /* Opus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Opus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +118,23 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		5D398D181DCBBBB800A5EA57 /* Artist */ = {
+			isa = PBXGroup;
+			children = (
+				5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */,
+			);
+			name = Artist;
+			sourceTree = "<group>";
+		};
+		5D398D191DCBBBCA00A5EA57 /* Venue */ = {
+			isa = PBXGroup;
+			children = (
+				5D398D1A1DCBBC2200A5EA57 /* VenueDashboardViewController.swift */,
+				5D398D1C1DD1373D00A5EA57 /* GigInfoViewController.swift */,
+			);
+			name = Venue;
+			sourceTree = "<group>";
+		};
 		5DEFF1C11DA56C4A00BC4F19 = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +193,7 @@
 		5DEFF2001DAB0E4100BC4F19 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5D398D161DCBAE4000A5EA57 /* Gig.swift */,
 				5DEFF2101DAEBBC500BC4F19 /* KeychainWrapper.h */,
 				5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */,
 				5DEFF2051DAC7F1F00BC4F19 /* User.swift */,
@@ -185,7 +209,8 @@
 			children = (
 				5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */,
 				5DEFF20B1DAC93B400BC4F19 /* UserInfoViewController.swift */,
-				5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */,
+				5D398D181DCBBBB800A5EA57 /* Artist */,
+				5D398D191DCBBBCA00A5EA57 /* Venue */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -481,13 +506,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */,
+				5D398D1B1DCBBC2200A5EA57 /* VenueDashboardViewController.swift in Sources */,
 				5DFB1C5C1DC78F8600AD5BAC /* Venue.swift in Sources */,
 				5DEFF2141DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift in Sources */,
 				5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */,
 				5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */,
+				5D398D1D1DD1373D00A5EA57 /* GigInfoViewController.swift in Sources */,
 				5DEFF20C1DAC93B400BC4F19 /* UserInfoViewController.swift in Sources */,
 				5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */,
 				5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */,
+				5D398D171DCBAE4100A5EA57 /* Gig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

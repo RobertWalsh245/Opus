@@ -20,7 +20,7 @@ class User {
     var _Ref = FIRDatabase.database().reference()
     //A reference to the storage buckets within firebase
     fileprivate var _StorageRef = FIRStorage.storage().reference(forURL: "gs://opus-f0c01.appspot.com")
-    fileprivate var _UserRef = FIRDatabase.database().reference().child("users")
+    var _UserRef = FIRDatabase.database().reference().child("users")
     
     let _PhotoLimit = 3
     
@@ -115,7 +115,7 @@ class User {
         self.email = (FIRAuth.auth()?.currentUser?.email)!
         
         //Check for values in 2 mandatory properties before continuing
-        if(!self.uid.isEmpty && !self.email.isEmpty){
+        if(!self.uid.isEmpty || !self.email.isEmpty){
             
             //Creates a new node under current _Ref equal to the UID of this user object
             let NewUserRef = self._Ref.child(uid)
@@ -136,7 +136,7 @@ class User {
     //Property that is dictionary of user info, call method to save to database
     func UpdateInDatabase() {
         //Check for values in 2 mandatory properties before continuing
-        if(!uid.isEmpty && !email.isEmpty){
+        if(!uid.isEmpty || !email.isEmpty){
             
             //Reference to the UID of this user object
             let NewUserRef = self._Ref.child(uid)
@@ -197,7 +197,49 @@ class User {
         })
         return image!
     }
-        
+    
+    func GetUserType(){
+        print("Determining User Type")
+        var type = ""
+        let UID = FIRAuth.auth()?.currentUser?.uid
+        if  UID != nil {
+            print("Log in found. Fetching data for UID ", "\(UID)")
+            //Check user tree for type of user
+            _Ref.child("users").child(UID!).observeSingleEvent(of: .value, with: { (snapshot) in
+                //print("Retrieved the below user and attributes:")
+                //print(snapshot.value)
+                
+                
+                if snapshot.exists(){
+                    if let val = (snapshot.value as AnyObject).value(forKey: "type"){
+                        type = (val as! String)
+                    }
+                }else{
+                    print("User doesn't exist in DB. Signing out")
+                    try! FIRAuth.auth()!.signOut()
+                }
+                
+                //Notify the type
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "UserType"),
+                        object: nil,
+                        userInfo: ["type": type])
+               
+            }) { (error) in
+                print(error.localizedDescription)
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "UserType"),
+                        object: nil,
+                        userInfo: ["type": type])
+            }
+            //Attempt to fetch user from both venue and artist tree. Succesful notification will kick of the remaining neccesary load ing
+        }else{
+            //if No UID found in auth, push back to log in screen
+            print("No Logged in UID found")
+        }
+    }
+
+    
    /* func RetrieveArtists() {
             print("Retrieving Artists")
             
