@@ -24,18 +24,21 @@ class Gig {
 
     var gid: String = ""
     var name: String = ""
-    var date: NSDate = NSDate()
+    var date: String = ""
     var description: String = ""
     var photoURL: String = ""
     var vid: String = ""
     var sets: Int = 1
-    var setduration: NSDate = NSDate()
+    var setduration: String = ""
     var address: String = ""
     var city: String = ""
     var state: String = ""
     var zip: String = ""
     var phone: String = ""
-    var time: NSDate = NSDate()
+    var time: String = ""
+    var lat: Double = 0.0
+    var lon: Double = 0.0
+    
     
     
     //var rate: Double = 0.0
@@ -76,6 +79,45 @@ class Gig {
         
     }
     
+    func AddressToLatLon () {
+        let Fulladdress = self.address + ", " + city + ", " + state + ", " + zip
+        print(Fulladdress)
+        //"5th Avenue, New York"
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(Fulladdress) { (placemarks, error) in
+            if error != nil {
+                print("Gig address conversion to lat lon failed")
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "ValidAddress"),
+                        object: nil,
+                        userInfo: nil)
+            } else if let placemarks = placemarks {
+                if placemarks.count != 0 {
+                    self.lat = (placemarks.first?.location?.coordinate.latitude)!
+                    self.lon = (placemarks.first?.location?.coordinate.longitude)!
+                    print("Gig address converted to lat lon successfully")
+                    let nc = NotificationCenter.default
+                    nc.post(name: Notification.Name(rawValue: "ValidAddress"),
+                            object: nil,
+                            userInfo: ["ValidAddress": true])
+                }else {
+                    print("Gig address conversion to lat lon failed")
+                    let nc = NotificationCenter.default
+                    nc.post(name: Notification.Name(rawValue: "ValidAddress"),
+                            object: nil,
+                            userInfo: nil)
+                }
+                
+                
+                
+            }
+                
+            
+        }
+        
+        
+    }
+    
     func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character
         //print("Converting to dict")
@@ -93,6 +135,23 @@ class Gig {
         return dict
     }
     
+    func isComplete() -> String {
+        var message = "Complete"
+        //Check for values in mandatory properties before continuing
+        
+        if self.name.isEmpty{
+            message = "Please provide a name for the gig"
+        }else if self.lat == 0.0 {
+            message = "Address is not valid"
+        }else if self.sets < 1 {
+            message = "Must have atleast 1 set"
+        }else if self.setduration == "" {
+            message = "Please specify the set duration"
+        }else if(self.vid.isEmpty) {
+            message = "Something went wrong. Please try again"
+        }
+        return message
+    }
     
     
     
