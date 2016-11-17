@@ -38,9 +38,105 @@ class Gig {
     var time: String = ""
     var lat: Double = 0.0
     var lon: Double = 0.0
+    var genre: String = ""
     
+    func RetrieveWithID (_ GID: String) {
+        
+        //Retrieve user from DB with given UID
+        _GigRef.child(GID).observeSingleEvent(of: .value, with: { (snapshot) in
+            //print("Retrieved the below user and attributes:")
+            //print(snapshot.value)
+            //Need to check each prop to see if the key exists before extracting and setting
+            
+            self.gid = GID
+            
+            if let val = (snapshot.value as AnyObject).value(forKey: "name"){
+                self.date = val as! String}
+            if let val = (snapshot.value as AnyObject).value(forKey: "date"){
+                self.date = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "description"){
+                self.description = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "photoURL"){
+                self.photoURL = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "vid"){
+                self.vid = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "sets"){
+                self.sets = (val as! Int)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "setduration"){
+                self.setduration = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "address"){
+                self.address = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "city"){
+                self.city = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "state"){
+                self.state = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "zip"){
+                self.zip = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "time"){
+                self.time = (val as! String)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "lat"){
+                self.lat = (val as! Double)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "lon"){
+                self.lon = (val as! Double)}
+            if let val = (snapshot.value as AnyObject).value(forKey: "genre"){
+                self.genre = (val as! String)}
+            
+            
+            
+            //Post notification that the user was initalized from the database succesfully, include the user info success message
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "GigInit"),
+                    object: self,
+                    userInfo: ["success": true])
+        }) { (error) in
+            print(error.localizedDescription)
+            //Post notification that the user was initalized from the database succesfully, don't include the success message
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "GigInit"),
+                    object: nil,
+                    userInfo: nil)
+        }
+        
+    }
     
-    
+    func setValuesForKeysWithDictionary(dict: Dictionary<String, AnyObject>) {
+        //Initializes the gig based on a passed in dictionary
+        //print("Setting gig values from dictionary")
+        if let val = dict["gid"] {
+            self.gid = val as! String}
+        if let val = dict["name"] {
+            self.name = val as! String}
+        if let val = dict["date"]{
+            self.date = (val as! String)}
+        if let val = dict["description"]{
+            self.description = (val as! String)}
+        if let val = dict["photoURL"]{
+            self.photoURL = (val as! String)}
+        if let val = dict["vid"]{
+            self.vid = (val as! String)}
+        if let val = dict["sets"]{
+            self.sets = (val as! Int)}
+        if let val = dict["setduration"]{
+            self.setduration = (val as! String)}
+        if let val = dict["address"]{
+            self.address = (val as! String)}
+        if let val = dict["city"]{
+            self.city = (val as! String)}
+        if let val = dict["state"]{
+            self.state = (val as! String)}
+        if let val = dict["zip"]{
+            self.zip = (val as! String)}
+        if let val = dict["time"]{
+            self.time = (val as! String)}
+        if let val = dict["lat"]{
+            self.lat = (val as! Double)}
+        if let val = dict["lon"]{
+            self.lon = (val as! Double)}
+        if let val = dict["genre"]{
+            self.genre = (val as! String)}
+        
+        
+    }
     //var rate: Double = 0.0
     
     func CreateInDatabase(){
@@ -78,6 +174,8 @@ class Gig {
         }
         
     }
+    
+   
     
     func AddressToLatLon () {
         let Fulladdress = self.address + ", " + city + ", " + state + ", " + zip

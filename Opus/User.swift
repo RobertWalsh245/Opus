@@ -198,6 +198,8 @@ class User {
         return image!
     }
     
+    
+    
     func GetUserType(){
         print("Determining User Type")
         var type = ""

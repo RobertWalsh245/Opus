@@ -34,8 +34,11 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
     var SetDurationRow = 0
     let GenrePickerView = UIPickerView()
     var GenreRow = 0
+    let StatePickerView = UIPickerView()
+    var StateRow = 0
     let SetDurationTypes = ["10 Mins", "20 Mins" , "30 Mins", "45 Mins", "1 Hour", "1.5 Hour", "2 Hours or >"]
     let GenreTypes = ["Any", "Alternative",  "Classical", "Electronic", "Heavy Metal", "Hip Hop", "Rock"]
+    let States = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
     
     weak var activeField: UITextField?
     weak var activeTextView: UITextView?
@@ -54,21 +57,14 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         dateFormatter.dateStyle = DateFormatter.Style.medium
         txtDate.text = dateFormatter.string(from: currentDate)
         
+        let save = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(SetValues))
         
+        navigationItem.rightBarButtonItems = [save]
         
-        //Initialize picker views and link them to their textviews. Tag will tell the picker view methods below which data source to use. Tag on text box is used in textfield began editing to set initial value
-        txtViewDescription.delegate = self
+        self.tabBarController?.tabBar.isHidden = true
         
-        SetDurationPickerView.delegate = self
-        SetDurationPickerView.tag = 0
-        txtSetDuration.inputView = SetDurationPickerView
-        txtSetDuration.tag = 0
+        InitPickerViews()
         
-        
-        GenrePickerView.delegate = self
-        GenrePickerView.tag = 1
-        txtGenre.inputView = GenrePickerView
-        txtGenre.tag = 0
         
         let nc = NotificationCenter.default
         nc.addObserver(self,
@@ -94,6 +90,9 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
                        selector: #selector(self.ValidAddressReceived(_:)),
                        name: NSNotification.Name(rawValue: "ValidAddress"),
                        object: nil)
+        
+        self.navigationController?.isNavigationBarHidden = false
+
     }
 
 
@@ -155,6 +154,7 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         gig.date = txtDate.text!
         gig.time = txtTime.text!
         gig.setduration = txtSetDuration.text!
+        gig.genre = txtGenre.text!
         
         //Calls an asynch conversion caught by a notifcation, if successful will call Save()
         gig.AddressToLatLon()
@@ -191,6 +191,8 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
             return SetDurationTypes.count
         }else if pickerView.tag == 1 {
             return GenreTypes.count
+        }else if pickerView.tag == 2 {
+            return States.count
         }
         return 1
     }
@@ -199,6 +201,8 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
             return SetDurationTypes[row]
         }else if pickerView.tag == 1 {
             return GenreTypes[row]
+        }else if pickerView.tag == 2 {
+            return States[row]
         }
         
         return ""
@@ -211,9 +215,60 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         }else if pickerView.tag == 1 {
             txtGenre.text = GenreTypes[row]
             GenreRow = row
+        }else if pickerView.tag == 2 {
+            txtState.text = States[row]
+            StateRow = row
         }
     }
+    func donePicker (sender:UIBarButtonItem)
+    {
+        dismissKeyboard()
+    }
+    func InitPickerViews() {
+        //Create tool bar for picker views
+        let toolBar = UIToolbar()
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        toolBar.tintColor = UIColor.black
+        toolBar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(donePicker))
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        //let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(donePicker))
+        
+        toolBar.setItems([ spaceButton, doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
 
+        
+        
+        //Initialize picker views and link them to their textviews. Tag will tell the picker view methods below which data source to use. Tag on text box is used in textfield began editing to set initial value
+        txtViewDescription.delegate = self
+        
+        SetDurationPickerView.delegate = self
+        SetDurationPickerView.tag = 0
+        SetDurationPickerView.showsSelectionIndicator = true
+        txtSetDuration.inputView = SetDurationPickerView
+        txtSetDuration.inputAccessoryView = toolBar
+        txtSetDuration.tag = 0
+        
+        
+        GenrePickerView.delegate = self
+        GenrePickerView.tag = 1
+        GenrePickerView.showsSelectionIndicator = true
+        txtGenre.inputView = GenrePickerView
+        txtGenre.inputAccessoryView = toolBar
+        txtGenre.tag = 1
+        
+        StatePickerView.delegate = self
+        StatePickerView.tag = 2
+        StatePickerView.showsSelectionIndicator = true
+        txtState.inputView = StatePickerView
+        txtState.inputAccessoryView = toolBar
+        txtState.tag = 1
+        
+        
+        
+    }
     func DisplayError(message: String) {
         
         self.lblError.text = message
@@ -246,6 +301,9 @@ class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         }else if sender.tag == 1 {
             //It's the Genre duration textfield set picker inital value
             SetDurationPickerView.selectRow(GenreRow, inComponent: 0, animated: true)
+        }else if sender.tag == 2 {
+            //It's the State duration textfield set picker inital value
+            SetDurationPickerView.selectRow(StateRow, inComponent: 0, animated: true)
         }
     }
     func textViewDidBeginEditing(_ textView: UITextView) {

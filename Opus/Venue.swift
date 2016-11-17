@@ -16,6 +16,9 @@ class Venue : User {
     
     var address: String = ""
     var capacity: Int = 0
+    var gigs: [Gig] = []
+    
+    var GigRef = FIRDatabase.database().reference().child("gigs")
     
     override init () {
         
@@ -75,6 +78,71 @@ class Venue : User {
         
     }
 
+    func GetGigsForVID(VID: String) {
+        print("Retrieving Gigs for VID " + VID)
+        //Clear out current gig array for venue
+        self.gigs.removeAll()
+        
+        let queryRef = GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
+        
+        //GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
+            //.observe(.childAdded, with:
+        
+        
+        //Query the gig tree for all gigs with a VID matching this Venue
+        queryRef.observe(.value, with: { snapshot in
+            
+                //Takes each snapshot of a gig and converts it into a dictionary, then passes to a gig object for the values to be set and adds to the array
+                if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                    for snap in snapshots {
+                        if let gigDict = snap.value as? Dictionary<String, AnyObject> {
+                            let gig = Gig()
+                            gig.setValuesForKeysWithDictionary(dict: gigDict)
+                            self.gigs.append(gig)
+                        }
+                    }
+                }
+                
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "GotGigsForVenue"),
+                        object: nil,
+                        userInfo: ["success": true])
+
+                //print(snapshot.children)
+                
+               // print(snapshot.childrenCount) // I got the expected number of items
+                //let enumerator = snapshot.children
+                //while let rest = enumerator.nextObject() as? FIRDataSnapshot {
+                    //print(rest.value)
+                    
+                    //Pass gig snapshot object and have it initialize itself from it
+                    
+                //}
+                
+                
+                //for key in snapshot.children {
+                    //let newGig = Gig()
+                    //newGig.RetrieveWithID(key as! String)
+                    
+                //}
+                //Create gig object and call gig inititializer. 
+                //Catch gig init notification and add resulting gig to venue array
+
+            }) { (error) in
+                print(error.localizedDescription)
+                
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "GotGigsForVenue"),
+                        object: nil,
+                        userInfo: nil)
+        }
+
+
+    }
+    
+    
+
+    
     override func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character
         //print("Converting to dict")

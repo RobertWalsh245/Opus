@@ -36,12 +36,12 @@ class VenueDashboardViewController: UIViewController {
         
     }
     deinit {
-        print("Deinit for ArtistDashboard called")
+        print("Deinit for VenueDashboard called")
         //Removes listener of Notifications when de init
         NotificationCenter.default.removeObserver(self)
     }
     override func viewWillDisappear(_ animated: Bool) {
-        print("ViewWillDisappear for ArtistDashboard called")
+        print("ViewWillDisappear for VenueDashboard called")
         NotificationCenter.default.removeObserver(self)
         super.viewWillDisappear(animated)
     }
