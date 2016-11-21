@@ -27,20 +27,17 @@ class GigDetailViewController: UIViewController {
         print("GigDetail View loaded")
         
         
-        //if !self.gig.name.isEmpty {
-            //The gig varible has been set, diaplay the info
-            DisplayInfo()
-        //}
-        
         
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        //if !self.gig.name.isEmpty {
+        if !self.gig.name.isEmpty {
         //The gig varible has been set, diaplay the info
         DisplayInfo()
-        //}
+        } else {
+            //Display message saying something went wrong
+        }
     }
     
     func DisplayInfo() {
@@ -53,6 +50,8 @@ class GigDetailViewController: UIViewController {
         lblSetDuration.text = String(gig.setduration)
         lblTime.text = gig.time
     }
+    
+    
     
     @IBAction func btnEditPressed(_ sender: UIButton) {
         

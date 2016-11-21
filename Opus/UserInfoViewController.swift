@@ -87,6 +87,10 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         //Subscribe to observe the notification that that the user was Initialized
         let nc = NotificationCenter.default
         nc.addObserver(self,
+                       selector: #selector(self.DisplayPhoto),
+                       name: NSNotification.Name(rawValue: "PhotoRetrieved"),
+                       object: nil)
+        nc.addObserver(self,
                        selector: #selector(self.ArtistWasInit),
                        name: NSNotification.Name(rawValue: "ArtistInit"),
                        object: nil)
@@ -99,7 +103,30 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
                        name: NSNotification.Name(rawValue: "UserInit"),
                        object: nil)
         
-        self.DetermineUserType()
+        
+        if !artist.uid.isEmpty {
+            //We have an artist object
+            if artist.photos.count > 0 {
+                ActivityIndicator.startAnimating()
+            }
+            userType = "artist"
+            self.InitialFormatting()
+            self.DisplayUserInfo()
+            
+        } else if !venue.uid.isEmpty {
+            //We have a venue
+            if venue.photos.count > 0 {
+                ActivityIndicator.startAnimating()
+            }
+            self.InitialFormatting()
+            userType = "venue"
+            self.DisplayUserInfo()
+        } else {
+            //We don't have either, retrieve one
+            self.DetermineUserType()
+        }
+        
+        
         
         
     }
@@ -121,6 +148,28 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         }
         
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Prepare for segue called")
+        if(segue.identifier == "VenueDashboard") {
+            //let VenueDashboardVC = (segue.destination as! VenueDashboardViewController)
+            //VenueDashboardVC.venue = venue
+            
+            let tabCtrl = segue.destination as! UITabBarController
+            let destinationVC = tabCtrl.viewControllers![0] as! VenueDashboardViewController
+            destinationVC.venue = venue
+            
+        } else if (segue.identifier == "ArtistDashboard") {
+            //let ArtistDashboardVC = (segue.destination as! ArtistDashboardViewController)
+            //ArtistDashboardVC.artist = artist
+            
+            let tabCtrl = segue.destination as! UITabBarController
+            let destinationVC = tabCtrl.viewControllers![0] as! ArtistDashboardViewController
+            destinationVC.artist = artist
+            
+        }
+    }
+    
+    
     @IBAction func txtDOBBeganEditing(_ sender: UITextView) {
         
         let datePickerView:UIDatePicker = UIDatePicker()
@@ -303,13 +352,15 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             txtGenre.text = artist.genre
             txtArtistType.text = artist.type
             
-            if artist.photos.count > 0 {
-                ActivityIndicator.startAnimating()
-                FIRStorage.storage().reference(forURL: artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-                    let image = UIImage(data: data!)
-                    self.ActivityIndicator.stopAnimating()
-                    self.imgProfPic.image = image
-                })
+            if artist._img != nil {
+                imgProfPic.image = artist._img
+            } else {
+               // ActivityIndicator.startAnimating()
+               // FIRStorage.storage().reference(forURL: artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
+                 //   let image = UIImage(data: data!)
+                 //   self.ActivityIndicator.stopAnimating()
+                 //   self.imgProfPic.image = image
+               // })
             }
         }else{
             print("Displaying Venue info to view UserInfo")
@@ -324,18 +375,28 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             }
             txtAddress.text = venue.address
             
-            if venue.photos.count > 0 {
-                ActivityIndicator.startAnimating()
-                FIRStorage.storage().reference(forURL: venue.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-                    let image = UIImage(data: data!)
-                    self.ActivityIndicator.stopAnimating()
-                    self.imgProfPic.image = image
-                })
+            if venue._img != nil {
+                imgProfPic.image = venue._img
+            } else {
+                //ActivityIndicator.startAnimating()
+              //  FIRStorage.storage().reference(forURL: venue.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
+               //     let image = UIImage(data: data!)
+                //    self.ActivityIndicator.stopAnimating()
+                //    self.imgProfPic.image = image
+               // })
             }
         }
         
     }
     
+    func DisplayPhoto(){
+        if venue._img != nil {
+            imgProfPic.image = venue._img
+        }else if artist._img != nil {
+            imgProfPic.image = artist._img
+        }
+        ActivityIndicator.stopAnimating()
+    }
     
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

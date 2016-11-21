@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class GigInfoViewController: UIViewController, UIPickerViewDelegate, UITextViewDelegate {
+class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewDelegate {
     
     @IBOutlet var lblError: UILabel!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!

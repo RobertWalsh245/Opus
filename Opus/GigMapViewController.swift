@@ -44,11 +44,28 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate {
         
         
     }
+    
+    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!)
+    {
+        print("Gig name tapped")
+        performSegue(withIdentifier: "MapToGigDetail", sender: UIViewController.self)
+    }
+    
+
+override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    print("Prepare for segue called")
+    if(segue.identifier == "MapToGigDetail") {
+        let GigDetailVC = (segue.destination as! GigDetailViewController)
+        //GigDetailVC.gig = venue.gigs[GigRow]
+    }
+}
+
 
     func GetGigs() {
         var loc = CLLocationCoordinate2D()
         
-        
+        //Need to call gig,set value for snapshot method
+        //Then add to dictionary that maps annotations to the gig object that needs to be passed
                 GigRef.observe(.value, with: { groupKeys in
                     for groupKey in groupKeys.children {
                        

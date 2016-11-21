@@ -53,7 +53,7 @@ class User {
     var lat: Double = 0.0
     var lon: Double = 0.0
     var photos: [String] = []
-    
+    var _img: UIImage?
     
     
     //Potential Methods
@@ -115,7 +115,7 @@ class User {
         self.email = (FIRAuth.auth()?.currentUser?.email)!
         
         //Check for values in 2 mandatory properties before continuing
-        if(!self.uid.isEmpty || !self.email.isEmpty){
+        if(!self.uid.isEmpty && !self.email.isEmpty){
             
             //Creates a new node under current _Ref equal to the UID of this user object
             let NewUserRef = self._Ref.child(uid)
@@ -136,7 +136,7 @@ class User {
     //Property that is dictionary of user info, call method to save to database
     func UpdateInDatabase() {
         //Check for values in 2 mandatory properties before continuing
-        if(!uid.isEmpty || !email.isEmpty){
+        if(!uid.isEmpty && !email.isEmpty){
             
             //Reference to the UID of this user object
             let NewUserRef = self._Ref.child(uid)
@@ -189,16 +189,20 @@ class User {
         
     }
     
-    func RetrievePhoto(_ URL: String) -> UIImage {
-        print("Retrieving photo from URL")
-        var image: UIImage?
+    func RetrievePhoto(_ URL: String) {
+        print("Retrieving photo from URL" + URL)
         FIRStorage.storage().reference(forURL: URL).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-             image = UIImage(data: data!)
-        })
-        return image!
+             self._img = UIImage(data: data!)
+            
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "PhotoRetrieved"),
+                    object: nil,
+                    userInfo: ["success": true])
+        }) 
+        
     }
     
-    
+
     
     func GetUserType(){
         print("Determining User Type")

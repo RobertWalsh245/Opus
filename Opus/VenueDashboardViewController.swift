@@ -73,9 +73,15 @@ class VenueDashboardViewController: UIViewController {
     
     @IBAction func btnEditPressed(_ sender: UIButton) {
         print("Edit pressed")
-        performSegue(withIdentifier: "UserInfo", sender: UIViewController.self)
+        performSegue(withIdentifier: "UserInfoFromVenue", sender: UIViewController.self)
     }
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Prepare for segue called")
+        if(segue.identifier == "UserInfoFromVenue") {
+            let UserInfoVC = (segue.destination as! UserInfoViewController)
+            UserInfoVC.venue = venue
+        }
+    }
     
     @IBAction func btnLogoutPressed(_ sender: AnyObject) {
         print("Logout Pressed")

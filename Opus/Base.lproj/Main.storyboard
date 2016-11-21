@@ -120,7 +120,7 @@
                         <outlet property="lblError" destination="NkC-of-utU" id="VGi-Z5-pr3"/>
                         <outlet property="txtPassword" destination="XPK-Mq-4Qx" id="wft-lZ-zHh"/>
                         <outlet property="txtUsername" destination="GR2-B5-AIs" id="f6x-Tl-lLb"/>
-                        <segue destination="Oyg-8H-faW" kind="show" identifier="UserInfo" id="lnn-oP-mJl"/>
+                        <segue destination="Oyg-8H-faW" kind="show" identifier="UserInfoFromLogin" id="lnn-oP-mJl"/>
                         <segue destination="Ned-Vs-oRB" kind="show" identifier="ArtistDashboard" id="mNZ-6e-f76"/>
                         <segue destination="opR-sP-eMK" kind="show" identifier="VenueDashboard" id="LE9-qv-MXx"/>
                     </connections>
@@ -334,10 +334,10 @@
             </objects>
             <point key="canvasLocation" x="2864.8000000000002" y="681.40929535232385"/>
         </scene>
-        <!--GigDashboard-->
+        <!--VenueGigDashboard-->
         <scene sceneID="Wah-2B-mim">
             <objects>
-                <viewController title="VenueGigs" id="8QJ-dS-OOy" userLabel="GigDashboard" customClass="GigDashboardViewController" customModule="Opus" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="VenueGigs" id="8QJ-dS-OOy" userLabel="VenueGigDashboard" customClass="VenueGigDashboardViewController" customModule="Opus" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="n4w-0V-Iji"/>
                         <viewControllerLayoutGuide type="bottom" id="e4g-b7-paV"/>
@@ -347,7 +347,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SNs-Qb-U69" userLabel="ContentView">
-                                <rect key="frame" x="0.0" y="24" width="375" height="643"/>
+                                <rect key="frame" x="0.0" y="24" width="375" height="594"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Music Matters" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gUW-fD-vZG">
                                         <rect key="frame" x="113" y="49" width="148" height="21"/>
@@ -631,10 +631,10 @@
             </objects>
             <point key="canvasLocation" x="4213.6000000000004" y="680.5097451274363"/>
         </scene>
-        <!--Gig Info View Controller-->
+        <!--Gig Edit View Controller-->
         <scene sceneID="HZD-fH-fvo">
             <objects>
-                <viewController storyboardIdentifier="GigInfoViewController" id="vEE-iL-CCW" customClass="GigInfoViewController" customModule="Opus" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GigInfoViewController" id="vEE-iL-CCW" customClass="GigEditViewController" customModule="Opus" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="eH8-hh-amw"/>
                         <viewControllerLayoutGuide type="bottom" id="cHP-pq-8t2"/>
@@ -944,7 +944,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SA4-fs-aLQ" userLabel="ContentView">
-                                <rect key="frame" x="0.0" y="20" width="375" height="622"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="573"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dzi-OD-rkJ">
                                         <rect key="frame" x="26" y="15" width="30" height="30"/>
@@ -1058,7 +1058,7 @@
                         <outlet property="lblBio" destination="7iK-Be-lfV" id="ILK-sk-EuX"/>
                         <outlet property="lblGenreType" destination="ybT-l4-1M3" id="gFI-7I-5zu"/>
                         <outlet property="lblWelcome" destination="U8a-JR-rUH" id="y4r-QN-VA7"/>
-                        <segue destination="Oyg-8H-faW" kind="show" identifier="UserInfo" id="4Ur-AG-UTM"/>
+                        <segue destination="Oyg-8H-faW" kind="show" identifier="UserInfoFromVenue" id="4Ur-AG-UTM"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="Logout" id="vTF-XO-IID"/>
                     </connections>
                 </viewController>
@@ -1147,6 +1147,7 @@
                     <tabBarItem key="tabBarItem" title="Gigs" id="qkH-82-rRA"/>
                     <connections>
                         <outlet property="mapView" destination="6Ks-0Y-ufI" id="b6v-e1-FnR"/>
+                        <segue destination="l8f-TL-ZjD" kind="show" identifier="MapToGigDetail" id="WPm-5W-Fyq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VQd-Wt-R01" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1291,7 +1292,7 @@
                         <outlet property="lblGenreType" destination="rcg-BW-h5Q" id="FSP-qa-9Bf"/>
                         <outlet property="lblWelcome" destination="sQ2-X9-6Ec" id="bpN-Gz-G6G"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="Logout" id="ATd-8j-cxy"/>
-                        <segue destination="Oyg-8H-faW" kind="show" identifier="UserInfo" id="uZS-tb-M9Y"/>
+                        <segue destination="Oyg-8H-faW" kind="show" identifier="UserInfoFromArtist" id="uZS-tb-M9Y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sVP-hT-ABB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1359,6 +1360,7 @@
         <segue reference="mNZ-6e-f76"/>
         <segue reference="oZ2-z8-iSW"/>
         <segue reference="LE9-qv-MXx"/>
-        <segue reference="4Ur-AG-UTM"/>
+        <segue reference="lnn-oP-mJl"/>
+        <segue reference="WPm-5W-Fyq"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -30,8 +30,31 @@ class ArtistDashboardViewController: UIViewController {
                        selector: #selector(self.UserWasInit),
                        name: NSNotification.Name(rawValue: "UserInit"),
                        object: nil)
+        nc.addObserver(self,
+                       selector: #selector(self.PhotoRetrieved),
+                       name: NSNotification.Name(rawValue: "PhotoRetrieved"),
+                       object: nil)
+
+        
         UITabBar.appearance().barTintColor = UIColor.black
       UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName : UIColor.white], for: .normal)
+        
+        if artist.uid.isEmpty {
+            //We don't have an artist object, go get it
+            let UID = FIRAuth.auth()?.currentUser?.uid
+            if  UID != nil {
+                print("Log in found. Fetching data for UID ", "\(UID)")
+                self.artist?.RetrieveArtistForUser(UID!)
+            }else{
+                //if No UID found in auth, push back to log in screen
+                print("No Logged in UID found, returning to log in screen")
+            }
+        } else {
+            //We already have the artist object, display it
+            self.DisplayUserInfo()
+            self.DisplayPhoto()
+        }
+        
         
         
     }
@@ -59,23 +82,22 @@ class ArtistDashboardViewController: UIViewController {
         
         //Do any additional setup after loading the view.
         
-        let UID = FIRAuth.auth()?.currentUser?.uid
-        if  UID != nil {
-            print("Log in found. Fetching data for UID ", "\(UID)")
-            self.artist?.RetrieveArtistForUser(UID!)
-        }else{
-            //if No UID found in auth, push back to log in screen
-            print("No Logged in UID found, returning to log in screen")
-        }
+        
 
 
     }
     
     @IBAction func btnEditPressed(_ sender: UIButton) {
         print("Edit pressed")
-        performSegue(withIdentifier: "UserInfo", sender: UIViewController.self)
+        performSegue(withIdentifier: "UserInfoFromArtist", sender: UIViewController.self)
     }
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Prepare for segue called")
+        if(segue.identifier == "UserInfoFromArtist") {
+            let UserInfoVC = (segue.destination as! UserInfoViewController)
+            UserInfoVC.artist = artist
+        }
+    }
    
     @IBAction func btnLogoutPressed(_ sender: AnyObject) {
         print("Logout Pressed")
@@ -93,12 +115,30 @@ class ArtistDashboardViewController: UIViewController {
         if notification.userInfo!["success"] != nil  {
             print("User was initialized successfully on ArtistDashboard")
             //The user was succesfully initalized, display the data to the user
+            //Call to retrieve the photo for the artist
+            
+            if artist.photos.count > 0 {
+                self.ActivityIndicator.startAnimating()
+                artist.RetrievePhoto(artist.photos[0])
+            }
             self.DisplayUserInfo()
         }else{
             //Something went wrong
             // print("Something went wrong with initializing the user")
         }
     }
+    
+    func PhotoRetrieved(_ notification: Notification) {
+        //Catches notification from user class
+        if notification.userInfo!["success"] != nil  {
+            print("Photo retrieved successfully on ArtistDashboard")
+            self.DisplayPhoto()
+        }else{
+            //Something went wrong
+            // print("Something went wrong with initializing the user")
+        }
+    }
+
     
     func DisplayUserInfo() {
         print("Displaying user data to view ArtistDashboard")
@@ -107,19 +147,27 @@ class ArtistDashboardViewController: UIViewController {
         lblBio.lineBreakMode = .byWordWrapping
         lblBio.numberOfLines = 0
         lblBio.text = artist.bio
+        
+        
         //withMaxSize: 25 * 1024 * 1024,
-        if self.artist.photos.count > 0 {
-            self.ActivityIndicator.startAnimating()
-            FIRStorage.storage().reference(forURL: self.artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-                let image = UIImage(data: data!)
-                self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.size.width / 2
-                self.imgProfPic.contentMode = .scaleAspectFill
-                self.ActivityIndicator.stopAnimating()
-                self.imgProfPic.image = image
-            })
-        }
+       // if self.artist.photos.count > 0 {
+         //   self.ActivityIndicator.startAnimating()
+         //   FIRStorage.storage().reference(forURL: self.artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
+         //       let image = UIImage(data: data!)
+         //       self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.size.width / 2
+         //       self.imgProfPic.contentMode = .scaleAspectFill
+         //       self.ActivityIndicator.stopAnimating()
+          //      self.imgProfPic.image = image
+         //   })
+       // }
 
         
+    }
+    func DisplayPhoto() {
+        self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.size.width / 2
+        self.imgProfPic.contentMode = .scaleAspectFill
+        self.ActivityIndicator.stopAnimating()
+        self.imgProfPic.image = artist._img
     }
     
     //Calls this function when the tap is recognized.

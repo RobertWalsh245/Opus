@@ -13,12 +13,12 @@ import UIKit
 import Firebase
 
 class Venue : User {
-    
+    //NOTE All properties that are not to be saved to firebase must be prefaced with a _ character
     var address: String = ""
     var capacity: Int = 0
     var gigs: [Gig] = []
     
-    var GigRef = FIRDatabase.database().reference().child("gigs")
+    var _GigRef = FIRDatabase.database().reference().child("gigs")
     
     override init () {
         
@@ -83,7 +83,7 @@ class Venue : User {
         //Clear out current gig array for venue
         self.gigs.removeAll()
         
-        let queryRef = GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
+        let queryRef = _GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
         
         //GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
             //.observe(.childAdded, with:

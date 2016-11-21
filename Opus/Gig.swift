@@ -51,7 +51,7 @@ class Gig {
             self.gid = GID
             
             if let val = (snapshot.value as AnyObject).value(forKey: "name"){
-                self.date = val as! String}
+                self.name = val as! String}
             if let val = (snapshot.value as AnyObject).value(forKey: "date"){
                 self.date = (val as! String)}
             if let val = (snapshot.value as AnyObject).value(forKey: "description"){
@@ -145,7 +145,7 @@ class Gig {
         self.gid = NewGigRef.key
         
         //Check for values in 3 mandatory properties before continuing
-        if(!self.gid.isEmpty || self.name.isEmpty || self.vid.isEmpty){
+        if(!self.gid.isEmpty && !self.name.isEmpty && !self.vid.isEmpty){
             //Place attributes in dict to be passed to Firebase
             //let UserDict = [Any?]()
             let GigDict: [String: Any] =  ["name": self.name,
@@ -160,7 +160,7 @@ class Gig {
     
     func UpdateInDatabase() {
         //Check for values in 3 mandatory properties before continuing
-        if(!self.gid.isEmpty || self.name.isEmpty || self.vid.isEmpty){
+        if(!self.gid.isEmpty && !self.name.isEmpty && !self.vid.isEmpty){
             
             //Reference to the GID of this gig object
             let NewGigRef = self._GigRef.child(gid)

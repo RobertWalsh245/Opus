@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class GigDashboardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var GigTableView: UITableView!
     
