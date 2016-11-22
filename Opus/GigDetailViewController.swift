@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GigDetailViewController: UIViewController {
+class GigDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var lblName: UILabel!
     @IBOutlet weak var lblDescription: UILabel!
@@ -20,13 +20,18 @@ class GigDetailViewController: UIViewController {
     
     @IBOutlet weak var imgGigPhoto: UIImageView!
     
+    @IBOutlet weak var SetTableView: UITableView!
+    
+    let cellReuseIdentifier = "setcell"
+    
     var gig = Gig()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print("GigDetail View loaded")
         
-        
+        SetTableView.delegate = self
+        SetTableView.dataSource = self
         
         // Do any additional setup after loading the view.
     }
@@ -45,9 +50,7 @@ class GigDetailViewController: UIViewController {
         lblName.text = gig.name
         lblDate.text = gig.date
         lblDescription.text = gig.description
-        lblGenre.text = gig.genre
-        lblSets.text = String(gig.sets) + " set(s)"
-        lblSetDuration.text = String(gig.setduration)
+        //lblSets.text = String(gig.sets) + " set(s)"
         lblTime.text = gig.time
     }
     
@@ -63,6 +66,52 @@ class GigDetailViewController: UIViewController {
     }
     
 
+//TableView Methods
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return gig._sets.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell:SetCell = self.SetTableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as! SetCell
+        
+        cell.lblGenre.text = gig._sets[indexPath.row].genre
+        cell.lblTime.text = gig._sets[indexPath.row].time
+        cell.lblDuration.text = gig._sets[indexPath.row].duration
+        cell.lblRate.text = "$" + String(gig._sets[indexPath.row].rate)
+        
+        cell.lblSetNumber.text = "Set " + String(indexPath.row + 1)
+        
+        //Need to add artist name too
+        
+        
+        //cell.myView.backgroundColor = self.colors[indexPath.row]
+        //cell.myCellLabel.text = self.animals[indexPath.row]
+        
+        return cell
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Prepare for segue called")
+        // if(segue.identifier == "GigDetail") {
+        //   let GigDetailVC = (segue.destination as! GigDetailViewController)
+        // GigDetailVC.gig = venue.gigs[GigRow]
+        // }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //Set selected row to be used by prepare for segue to pass the right gig
+        //GigRow = indexPath.row
+        
+        //Segue to giginfo view and set the gig object
+        //performSegue(withIdentifier: "GigDetail", sender: UIViewController.self)
+        
+        
+    }
+    private func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    
     /*
     // MARK: - Navigation
 

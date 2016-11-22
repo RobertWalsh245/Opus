@@ -10,14 +10,20 @@ import UIKit
 import MapKit
 import Firebase
 
-class GigMapViewController: UIViewController, CLLocationManagerDelegate {
+class GigMapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     let regionRadius: CLLocationDistance = 6000
     
+    var selectedAnnotation: GigAnnotation!
+    
     var GigRef = FIRDatabase.database().reference().child("gigs")
     
+    var VenueRef = FIRDatabase.database().reference().child("venues")
+    
     var gigLocations: [CLLocationCoordinate2D] = []
+    
+    var Venues: [String:Venue]? = nil
     
     var InitialLocSet = false
     
@@ -32,6 +38,9 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
         //When false Updating locations will center the map to the current lat lon
         InitialLocSet = false
+        mapView.delegate = self
+        
+        mapView.showsUserLocation = true
         
         // Do any additional setup after loading the view.
     }
@@ -45,21 +54,9 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate {
         
     }
     
-    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!)
-    {
-        print("Gig name tapped")
-        performSegue(withIdentifier: "MapToGigDetail", sender: UIViewController.self)
-    }
-    
+  
 
-override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    print("Prepare for segue called")
-    if(segue.identifier == "MapToGigDetail") {
-        let GigDetailVC = (segue.destination as! GigDetailViewController)
-        //GigDetailVC.gig = venue.gigs[GigRow]
-    }
-}
-
+   
 
     func GetGigs() {
         var loc = CLLocationCoordinate2D()
@@ -71,7 +68,7 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
                        
                         self.GigRef.child((groupKey as AnyObject).key).observeSingleEvent(of: .value, with: { snapshot in
                             
-                            let dropPin = MKPointAnnotation()
+                            let dropPin = GigAnnotation()
                             
                             if let val = (snapshot.value as AnyObject).value(forKey: "lat"){
                                 loc.latitude = (val as! Double)
@@ -82,23 +79,72 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
                             if let val = (snapshot.value as AnyObject).value(forKey: "name"){
                                 dropPin.title = (val as! String)
                             }
+                            if let val = (snapshot.value as AnyObject).value(forKey: "vid"){
+                                dropPin.vid = (val as! String)
+                            }
                             
+                            //print("The vid is " + dropPin.vid)
                             
                             dropPin.coordinate = loc
                             
                             self.mapView.addAnnotation(dropPin)
                             self.gigLocations.append(loc)
-                            
-                            
                         })
                     }
-                   
                 })
-                
         
                 //Need to check each prop to see if the key exists before extracting and setting
-    
     }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        print("Annotation selected")
+        
+        if let annotation = view.annotation as? GigAnnotation {
+            print("Your annotation title: " + annotation.title!)
+            selectedAnnotation = annotation
+            print("the slected annotation vid is: ", selectedAnnotation.vid)
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if control == view.rightCalloutAccessoryView {
+            //selectedAnnotation = view.annotation as! GigAnnotation!
+            print("Annotation button tapped")
+            
+            performSegue(withIdentifier: "MapToVenue", sender: UIViewController.self)
+        }
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Prepare for segue called")
+        if(segue.identifier == "MapToVenue") {
+            
+            //let tabVc = segue.destination as! UITabBarController
+            //let navVc = tabVc.viewControllers!.first as! UINavigationController
+           // let VenueVc = navVc.viewControllers.first as! VenueDashboardViewController
+            
+            let tabCtrl = segue.destination as! UITabBarController
+            let destinationVC = tabCtrl.viewControllers![0] as! VenueDashboardViewController
+            destinationVC.VIDForLoad = selectedAnnotation.vid
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        //Adds info button to annotation
+        
+        let annotationIdentifier = "ID"
+        
+        var view = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier)
+        if view == nil {
+            view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            view?.canShowCallout = true
+            view?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        } else {
+            view?.annotation = annotation
+        }
+        return view
+    }
+
+    
     
     func PlotGigs(){
        print("Plotting Gigs")
@@ -153,5 +199,46 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Pass the selected object to the new view controller.
     }
     */
-
+    /* func GetVenues() {
+     var loc = CLLocationCoordinate2D()
+     
+     //Need to call gig,set value for snapshot method
+     //Then add to dictionary that maps annotations to the gig object that needs to be passed
+     VenueRef.observe(.value, with: { groupKeys in
+     for groupKey in groupKeys.children {
+     
+     self.VenueRef.child((groupKey as AnyObject).key).observeSingleEvent(of: .value, with: { snapshot in
+     
+     let dropPin = MKPointAnnotation()
+     
+     // let btn = UIButton(type: .detailDisclosure)
+     // dropPin.rightCalloutAccessoryView = btn
+     
+     if let val = (snapshot.value as AnyObject).value(forKey: "lat"){
+     loc.latitude = (val as! Double)
+     }
+     if let val = (snapshot.value as AnyObject).value(forKey: "lon"){
+     loc.longitude = (val as! Double)
+     }
+     if let val = (snapshot.value as AnyObject).value(forKey: "name"){
+     dropPin.title = (val as! String)
+     }
+     
+     
+     dropPin.coordinate = loc
+     
+     self.mapView.addAnnotation(dropPin)
+     self.venues[
+     
+     //Create setValues from dict for user class and artist and venue subclasses
+     //Initialize venue using new method
+     //add venues to dictionary here with VID as key
+     //pass venue to venue dashboard
+     
+     })
+     }
+     })
+     
+     //Need to check each prop to see if the key exists before extracting and setting
+     } */
 }

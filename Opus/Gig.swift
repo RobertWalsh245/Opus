@@ -21,6 +21,7 @@ class Gig {
     //A reference to the storage buckets within firebase
     fileprivate var _StorageRef = FIRStorage.storage().reference(forURL: "gs://opus-f0c01.appspot.com")
     fileprivate var _GigRef = FIRDatabase.database().reference().child("gigs")
+    var _SetRef = FIRDatabase.database().reference().child("sets")
 
     var gid: String = ""
     var name: String = ""
@@ -29,7 +30,6 @@ class Gig {
     var photoURL: String = ""
     var vid: String = ""
     var sets: Int = 1
-    var setduration: String = ""
     var address: String = ""
     var city: String = ""
     var state: String = ""
@@ -38,7 +38,10 @@ class Gig {
     var time: String = ""
     var lat: Double = 0.0
     var lon: Double = 0.0
-    var genre: String = ""
+    
+    
+    var _sets: [Set] = []
+    
     
     func RetrieveWithID (_ GID: String) {
         
@@ -62,8 +65,6 @@ class Gig {
                 self.vid = (val as! String)}
             if let val = (snapshot.value as AnyObject).value(forKey: "sets"){
                 self.sets = (val as! Int)}
-            if let val = (snapshot.value as AnyObject).value(forKey: "setduration"){
-                self.setduration = (val as! String)}
             if let val = (snapshot.value as AnyObject).value(forKey: "address"){
                 self.address = (val as! String)}
             if let val = (snapshot.value as AnyObject).value(forKey: "city"){
@@ -78,10 +79,8 @@ class Gig {
                 self.lat = (val as! Double)}
             if let val = (snapshot.value as AnyObject).value(forKey: "lon"){
                 self.lon = (val as! Double)}
-            if let val = (snapshot.value as AnyObject).value(forKey: "genre"){
-                self.genre = (val as! String)}
             
-            
+            self.GetSetsForGID(GID: self.gid)
             
             //Post notification that the user was initalized from the database succesfully, include the user info success message
             let nc = NotificationCenter.default
@@ -116,8 +115,6 @@ class Gig {
             self.vid = (val as! String)}
         if let val = dict["sets"]{
             self.sets = (val as! Int)}
-        if let val = dict["setduration"]{
-            self.setduration = (val as! String)}
         if let val = dict["address"]{
             self.address = (val as! String)}
         if let val = dict["city"]{
@@ -132,17 +129,28 @@ class Gig {
             self.lat = (val as! Double)}
         if let val = dict["lon"]{
             self.lon = (val as! Double)}
-        if let val = dict["genre"]{
-            self.genre = (val as! String)}
         
+        self.GetSetsForGID(GID: self.gid)
         
     }
     //var rate: Double = 0.0
     
     func CreateInDatabase(){
+        
+        
+        
         //Generate a unique id for the gig and set it as the GID
         let NewGigRef = _GigRef.childByAutoId()
         self.gid = NewGigRef.key
+        
+        //Check if there are sets that need to be created
+        if self._sets.count > 0 {
+            for set in self._sets {
+                set.gid = self.gid
+                set.CreateInDatabase()
+            }
+        }
+        
         
         //Check for values in 3 mandatory properties before continuing
         if(!self.gid.isEmpty && !self.name.isEmpty && !self.vid.isEmpty){
@@ -159,6 +167,18 @@ class Gig {
     }
     
     func UpdateInDatabase() {
+        if self._sets.count > 0 {
+            for set in self._sets {
+                if set.sid.isEmpty {
+                    //It hasn't been created yet
+                    set.gid = self.gid
+                    set.CreateInDatabase()
+                }else{
+                    set.UpdateInDatabase()
+                }
+            }
+        }
+        
         //Check for values in 3 mandatory properties before continuing
         if(!self.gid.isEmpty && !self.name.isEmpty && !self.vid.isEmpty){
             
@@ -175,7 +195,50 @@ class Gig {
         
     }
     
-   
+    func GetSetsForGID(GID: String) {
+        print("Retrieving Sets for GID " + GID)
+        //Clear out current gig array for venue
+        self._sets.removeAll()
+        
+        let queryRef = _SetRef.queryOrdered(byChild: "gid").queryEqual(toValue: GID)
+        
+        //GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
+        //.observe(.childAdded, with:
+        
+        
+        //Query the gig tree for all gigs with a VID matching this Venue
+        queryRef.observe(.value, with: { snapshot in
+            
+            //Takes each snapshot of a gig and converts it into a dictionary, then passes to a gig object for the values to be set and adds to the array
+            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                for snap in snapshots {
+                    if let setDict = snap.value as? Dictionary<String, AnyObject> {
+                        let set = Set()
+                        set.setValuesForKeysWithDictionary(dict: setDict)
+                        self._sets.append(set)
+                    }
+                }
+            }
+            
+            
+            
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "GotGigsForVenue"),
+                    object: nil,
+                    userInfo: ["success": true])
+            
+        }) { (error) in
+            print(error.localizedDescription)
+            
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "GotGigsForVenue"),
+                    object: nil,
+                    userInfo: nil)
+        }
+        
+        
+    }
+
     
     func AddressToLatLon () {
         let Fulladdress = self.address + ", " + city + ", " + state + ", " + zip
@@ -241,10 +304,8 @@ class Gig {
             message = "Please provide a name for the gig"
         }else if self.lat == 0.0 {
             message = "Address is not valid"
-        }else if self.sets < 1 {
+        }else if self._sets.count < 1 {
             message = "Must have atleast 1 set"
-        }else if self.setduration == "" {
-            message = "Please specify the set duration"
         }else if(self.vid.isEmpty) {
             message = "Something went wrong. Please try again"
         }

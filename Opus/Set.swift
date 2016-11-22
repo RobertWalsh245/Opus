@@ -62,6 +62,26 @@ class Set {
     }
     
     
+    func setValuesForKeysWithDictionary(dict: Dictionary<String, AnyObject>) {
+        //Initializes the gig based on a passed in dictionary
+        //print("Setting gig values from dictionary")
+        if let val = dict["sid"] {
+            self.sid = val as! String}
+        if let val = dict["gid"] {
+            self.gid = val as! String}
+        if let val = dict["aid"] {
+            self.aid = val as! String}
+        if let val = dict["duration"]{
+            self.duration = (val as! String)}
+        if let val = dict["genre"]{
+            self.genre = (val as! String)}
+        if let val = dict["time"]{
+            self.time = (val as! String)}
+        if let val = dict["rate"]{
+            self.rate = (val as! Double)}
+    }
+
+    
     func CreateInDatabase(){
         //Generate a unique id for the gig and set it as the GID
         let NewSetRef = _SetRef.childByAutoId()
@@ -71,16 +91,16 @@ class Set {
         if(!self.sid.isEmpty && self.rate >= 0 && !self.gid.isEmpty && !self.time.isEmpty && !self.genre.isEmpty){
             //Place attributes in dict to be passed to Firebase
             //let UserDict = [Any?]()
-            let SetDict: [String: Any] =  ["name": self.rate,
-                                           "vid": self.gid,
+            let SetDict: [String: Any] =  [
+                                           "gid": self.gid,
                                            "time": self.time,
                                            "rate": self.rate,
                                            "genre": self.genre]
             //Set the Values in DB
             NewSetRef.setValue(SetDict)
-            print("Added gig ", "\(gid)", " to database")
+            print("Added set ", "\(sid)", " to database")
         }else{
-            print("No name and/or GID. Gig not added to database")
+            print("No name and/or SID. Set not added to database")
         }
     }
     
@@ -101,6 +121,22 @@ class Set {
         
     }
     
+    
+    func isComplete() -> String {
+        var message = "Complete"
+        //Check for values in mandatory properties before continuing
+        
+        if self.duration.isEmpty{
+            message = "Please provide a duration for the set"
+        }else if self.rate <= 0.0 {
+            message = "Please provide a positive rate for the set"
+        }else if self.time.isEmpty {
+            message = "Please set a time for the set"
+       // }else if(self.gid.isEmpty) {
+           // message = "Something went wrong. Please try again"
+        }
+        return message
+    }
     
     func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character

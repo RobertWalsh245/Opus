@@ -9,8 +9,9 @@
 import UIKit
 import Firebase
 
-class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewDelegate {
+class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var txtRate: UITextField!
     @IBOutlet var lblError: UILabel!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var ScrollView: UIScrollView!
@@ -28,7 +29,10 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
     @IBOutlet var txtPhone: UITextField!
     @IBOutlet var txtViewDescription: UITextView!
     
+    @IBOutlet weak var SetTableView: UITableView!
     var gig: Gig = Gig()
+    
+    let cellReuseIdentifier = "setcell"
     
     let SetDurationPickerView = UIPickerView()
     var SetDurationRow = 0
@@ -50,12 +54,19 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         SetDurationRow = 3
         txtGenre.text = "Any"
         GenreRow = 0
-        txtSetNumber.text = "1"
-        txtTime.text = "8:00 PM"
+        
         let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = DateFormatter.Style.medium
         txtDate.text = dateFormatter.string(from: currentDate)
+        
+        self.ScrollView.delaysContentTouches = true
+        self.ScrollView.canCancelContentTouches = false
+        self.ScrollView.panGestureRecognizer.delaysTouchesBegan = true
+        
+        
+        SetTableView.delegate = self
+        SetTableView.dataSource = self
         
         let save = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(SetValues))
         
@@ -101,6 +112,29 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         SetValues()
     }
     
+    @IBAction func btnAddSetPressed(_ sender: UIButton) {
+        let NewSet = Set()
+        NewSet.time = txtTime.text!
+        NewSet.duration = txtSetDuration.text!
+        NewSet.genre = txtGenre.text!
+        NewSet.gid = self.gig.gid
+        
+        if !(txtRate.text?.isEmpty)! {
+            NewSet.rate = Double(txtRate.text!)!
+        }
+        let msg = NewSet.isComplete()
+        
+        if msg == "Complete" {
+            gig._sets.append(NewSet)
+            txtTime.text = ""
+            txtRate.text = ""
+            self.SetTableView.reloadData()
+        }else{
+            print(msg)
+        }
+        
+    }
+   
     @IBOutlet var btnDiscardPressed: UIButton!
     
     @IBAction func btnSetPicturePressed(_ sender: UIButton) {
@@ -135,7 +169,62 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         let strDate = dateFormatter.string(from: datePicker.date)
         self.txtTime.text = strDate
     }
+
+//TableView Methods
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return gig._sets.count
+    }
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell:SetCell = self.SetTableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as! SetCell
+        
+        cell.lblGenre.text = gig._sets[indexPath.row].genre
+        cell.lblTime.text = gig._sets[indexPath.row].time
+        cell.lblDuration.text = gig._sets[indexPath.row].duration
+        cell.lblRate.text = "$" + String(gig._sets[indexPath.row].rate)
+        
+        cell.lblSetNumber.text = "Set " + String(indexPath.row + 1)
+        
+        //Need to add artist name too
+ 
+ 
+        //cell.myView.backgroundColor = self.colors[indexPath.row]
+        //cell.myCellLabel.text = self.animals[indexPath.row]
+        
+        return cell
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Prepare for segue called")
+       // if(segue.identifier == "GigDetail") {
+         //   let GigDetailVC = (segue.destination as! GigDetailViewController)
+           // GigDetailVC.gig = venue.gigs[GigRow]
+       // }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //Set selected row to be used by prepare for segue to pass the right gig
+        //GigRow = indexPath.row
+        
+        //Segue to giginfo view and set the gig object
+        //performSegue(withIdentifier: "GigDetail", sender: UIViewController.self)
+        
+        
+    }
+    private func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func gestureRecognizer(_: UIGestureRecognizer,shouldRecognizeSimultaneouslyWithGestureRecognizer:UIGestureRecognizer) -> Bool {
+        
+        //if otherGestureRecogizer.view = UITableView {
+        //    return true
+        //}
+
+
+        return true
+    }
+
 //Functions
     
 //Saving
@@ -148,13 +237,11 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         gig.state = txtState.text!
         gig.zip = txtZIP.text!
         gig.phone = txtPhone.text!
-        if !(txtSetNumber.text?.isEmpty)! {
-            gig.sets = Int(txtSetNumber.text!)!
-        }
+        //gig.sets = Int(txtSetNumber.text!)!
+        
         gig.date = txtDate.text!
         gig.time = txtTime.text!
-        gig.setduration = txtSetDuration.text!
-        gig.genre = txtGenre.text!
+        
         
         //Calls an asynch conversion caught by a notifcation, if successful will call Save()
         gig.AddressToLatLon()

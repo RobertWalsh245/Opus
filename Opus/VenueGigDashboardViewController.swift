@@ -11,11 +11,16 @@ import Firebase
 
 class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var btnNewGig: UIButton!
+    @IBOutlet weak var lblGigs: UILabel!
+    @IBOutlet weak var lblName: UILabel!
     @IBOutlet weak var GigTableView: UITableView!
     
     var Gigs: [Gig] = []
     var GigRow = 0
     var venue = Venue()
+    
+    var ViewOnly = true
     
     let cellReuseIdentifier = "gigcell"
     
@@ -24,7 +29,6 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         
         GigTableView.delegate = self
         GigTableView.dataSource = self
-        
         
         navigationController?.navigationBar.barTintColor = UIColor.black
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -35,11 +39,21 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         
         navigationController?.navigationBar.tintColor = UIColor.red
         
+        //Get venue object from tabbar property
+        if let tbc = self.tabBarController as? VenueTabbar {
+            self.venue = tbc.venue
+        }
+            self.venue.GetGigsForVID(VID: venue.uid)
+        
+        //Check if the logged in user is the venue being diplayed
         let VID = FIRAuth.auth()?.currentUser?.uid
-        if  VID != nil {
-            self.venue.GetGigsForVID(VID: VID!)
+        if  VID == venue.uid {
+            self.ViewOnly = false
+        }else {
+            self.ViewOnly = true
         }
         
+        self.InitialSetup()
         // Do any additional setup after loading the view.
     }
     
@@ -47,10 +61,10 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         self.navigationController?.isNavigationBarHidden = true
         self.tabBarController?.tabBar.isHidden = false
         
-        let VID = FIRAuth.auth()?.currentUser?.uid
-        if  VID != nil {
-            self.venue.GetGigsForVID(VID: VID!)
-        }
+       // let VID = FIRAuth.auth()?.currentUser?.uid
+      //  if  VID != nil {
+       //     self.venue.GetGigsForVID(VID: VID!)
+       // }
         
         //Catches notifcation from Vendor class that the gigs were retrieved
         let nc = NotificationCenter.default
@@ -78,6 +92,17 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         
     }
 
+    func InitialSetup() {
+        lblName.text = "Venue: " + venue.name
+        
+        if ViewOnly {
+            btnNewGig.isHidden = true
+        } else {
+            btnNewGig.isHidden = false
+        }
+        
+    }
+    
 //TableView Methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return venue.gigs.count
@@ -124,6 +149,7 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         if notification.userInfo!["success"] != nil  {
             print("Retrieved " + String(self.venue.gigs.count) + " gig(s) for the venue")
             self.GigTableView.reloadData()
+            lblGigs.text = String(venue.gigs.count) + " Active Gigs"
         }else{
             //Something went wrong
             print("Something went wrong retrieving the gigs for the venue")

@@ -17,6 +17,9 @@
 		5D8F1E2C1DB974E500C53331 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2A1DB974E500C53331 /* Main.storyboard */; };
 		5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2D1DBECC1400C53331 /* Artist.swift */; };
 		5DE965561DE34BA5003EBF2C /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965551DE34BA5003EBF2C /* Set.swift */; };
+		5DE965581DE35B5E003EBF2C /* SetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965571DE35B5E003EBF2C /* SetCell.swift */; };
+		5DE9655A1DE3C600003EBF2C /* VenueTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965591DE3C600003EBF2C /* VenueTabbar.swift */; };
+		5DE9655C1DE4862B003EBF2C /* GigAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE9655B1DE4862B003EBF2C /* GigAnnotation.swift */; };
 		5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */; };
 		5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */; };
 		5DEFF1D51DA56C4A00BC4F19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DEFF1D41DA56C4A00BC4F19 /* Assets.xcassets */; };
@@ -62,6 +65,9 @@
 		5D8F1E2B1DB974E500C53331 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5D8F1E2D1DBECC1400C53331 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		5DE965551DE34BA5003EBF2C /* Set.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
+		5DE965571DE35B5E003EBF2C /* SetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetCell.swift; sourceTree = "<group>"; };
+		5DE965591DE3C600003EBF2C /* VenueTabbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueTabbar.swift; sourceTree = "<group>"; };
+		5DE9655B1DE4862B003EBF2C /* GigAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigAnnotation.swift; sourceTree = "<group>"; };
 		5DEFF1CA1DA56C4A00BC4F19 /* Opus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Opus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -133,6 +139,7 @@
 			children = (
 				5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */,
 				5D398D201DDBAB5200A5EA57 /* GigMapViewController.swift */,
+				5DE9655B1DE4862B003EBF2C /* GigAnnotation.swift */,
 			);
 			name = Artist;
 			sourceTree = "<group>";
@@ -142,7 +149,9 @@
 			children = (
 				5D398D1A1DCBBC2200A5EA57 /* VenueDashboardViewController.swift */,
 				5D398D1E1DD77CA600A5EA57 /* VenueGigDashboardViewController.swift */,
+				5DE965591DE3C600003EBF2C /* VenueTabbar.swift */,
 				5D398D1C1DD1373D00A5EA57 /* GigEditViewController.swift */,
+				5DE965571DE35B5E003EBF2C /* SetCell.swift */,
 			);
 			name = Venue;
 			sourceTree = "<group>";
@@ -526,6 +535,7 @@
 				5DFB1C5C1DC78F8600AD5BAC /* Venue.swift in Sources */,
 				5D398D231DDCEABE00A5EA57 /* GigDetailViewController.swift in Sources */,
 				5DEFF2141DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift in Sources */,
+				5DE9655C1DE4862B003EBF2C /* GigAnnotation.swift in Sources */,
 				5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */,
 				5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */,
 				5D398D1F1DD77CA600A5EA57 /* VenueGigDashboardViewController.swift in Sources */,
@@ -535,6 +545,8 @@
 				5D398D251DDD46F300A5EA57 /* GigCell.swift in Sources */,
 				5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */,
 				5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */,
+				5DE9655A1DE3C600003EBF2C /* VenueTabbar.swift in Sources */,
+				5DE965581DE35B5E003EBF2C /* SetCell.swift in Sources */,
 				5D398D171DCBAE4100A5EA57 /* Gig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

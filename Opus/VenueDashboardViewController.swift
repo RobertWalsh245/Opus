@@ -15,13 +15,18 @@ import CoreLocation
 class VenueDashboardViewController: UIViewController {
     
     
+    @IBOutlet weak var btnEdit: UIButton!
     @IBOutlet var lblBio: UILabel!
     @IBOutlet var lblGenreType: UILabel!
     @IBOutlet fileprivate var lblWelcome: UILabel!
     @IBOutlet var imgProfPic: UIImageView!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     
+    var ViewOnly = true
+    
     var venue: Venue! = Venue()
+    
+    var VIDForLoad: String = ""
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -43,6 +48,10 @@ class VenueDashboardViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         print("ViewWillDisappear for VenueDashboard called")
         NotificationCenter.default.removeObserver(self)
+         //Set tabbar venue property
+        if let tbc = self.tabBarController as? VenueTabbar {
+            tbc.venue = self.venue
+        }
         super.viewWillDisappear(animated)
     }
     override func viewDidLoad() {
@@ -59,14 +68,31 @@ class VenueDashboardViewController: UIViewController {
         
         //Do any additional setup after loading the view.
         
-        let UID = FIRAuth.auth()?.currentUser?.uid
-        if  UID != nil {
-            print("Log in found. Fetching data for UID ", "\(UID)")
-            self.venue?.RetrieveVenueForUser(UID!)
-        }else{
-            //if No UID found in auth, push back to log in screen
-            print("No Logged in UID found, returning to log in screen")
+       // if let tbc = self.tabBarController as? VenueTabbar {
+         //   self.venue = tbc.venue
+        //}
+        
+        if self.VIDForLoad.isEmpty && self.venue.uid.isEmpty {
+            //We weren't passed an ID or a venue object, load the current logged in user
+            let UID = FIRAuth.auth()?.currentUser?.uid
+            if  UID != nil {
+                print("Log in found. Fetching data for UID ", "\(UID)")
+                self.venue?.RetrieveVenueForUser(UID!)
+            }else{
+                //if No UID found in auth, push back to log in screen
+                print("No Logged in UID found, returning to log in screen")
+            }
+
+        } else if !self.VIDForLoad.isEmpty {
+            //We were passed a VID load that
+            print("Loading venue from a passed in VID")
+            self.venue?.RetrieveVenueForUser(VIDForLoad)
+        } else if !self.venue.uid.isEmpty {
+            //We were passed a venue object load that
+            print("Venue object passed displaying data")
+            self.DisplayUserInfo()
         }
+        
         
         
     }
@@ -123,7 +149,13 @@ class VenueDashboardViewController: UIViewController {
             })
         }
         
-        
+        //If the logged in user doesn't match the venue we are displaying then set to view only
+        let UID = FIRAuth.auth()?.currentUser?.uid
+        if UID != venue.uid {
+            btnEdit.isHidden = true
+        }else{
+            btnEdit.isHidden = false
+        }
     }
     
     //Calls this function when the tap is recognized.

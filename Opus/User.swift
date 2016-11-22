@@ -109,6 +109,25 @@ class User {
         }
     
     }
+    
+  /*  func setValuesForKeysWithDictionary(dict: Dictionary<String, AnyObject>) {
+        //Initializes the gig based on a passed in dictionary
+        //print("Setting gig values from dictionary")
+        if let val = dict["gid"] {
+            self.gid = val as! String}
+        if let val = dict["name"] {
+            self.name = val as! String}
+        if let val = dict["date"]{
+            self.date = (val as! String)}
+        if let val = dict["description"]{
+            self.description = (val as! String)}
+        if let val = dict["photoURL"]{
+            self.photoURL = (val as! String)}
+       
+        
+    } */
+
+    
  
     func CreateInDatabase(){
         self.uid = (FIRAuth.auth()?.currentUser?.uid)!
