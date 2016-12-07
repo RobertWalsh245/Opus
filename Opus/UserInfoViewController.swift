@@ -17,7 +17,6 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var txtName: UITextField!
     @IBOutlet var txtBio: UITextView!
-    @IBOutlet var btnLocationServices: UIButton!
     @IBOutlet var btnNext: UIButton!
     @IBOutlet var imgProfPic: UIImageView!
  
@@ -36,6 +35,16 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     @IBOutlet var VenueDetailView: UIView!
     @IBOutlet var txtAddress: UITextField!
     @IBOutlet var txtCapacity: UITextField!
+    @IBOutlet weak var txtCity: UITextField!
+    @IBOutlet weak var txtState: UITextField!
+    @IBOutlet weak var txtZip: UITextField!
+    @IBOutlet weak var txtPhone: UITextField!
+    @IBOutlet weak var AddressView: UIView!
+    
+    let StatePickerView = UIPickerView()
+    var StateRow = 0
+    let States = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
+
     
     var _Ref = FIRDatabase.database().reference()
     
@@ -51,7 +60,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Loaded UserInfoViewController")
+        //print("Loaded UserInfoViewController")
         
         //Initialize picker views and link them to their textviews. Tag will tell the picker view methods below which data source to use
         let TypePickerView = UIPickerView()
@@ -68,6 +77,11 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         GenderPickerView.delegate = self
         GenderPickerView.tag = 2
         txtGender.inputView = GenderPickerView
+        
+        let StatePickerView = UIPickerView()
+        StatePickerView.delegate = self
+        StatePickerView.tag = 3
+        txtState.inputView = StatePickerView
         
         picker.delegate = self
         locationManager.delegate = self
@@ -87,7 +101,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         //Subscribe to observe the notification that that the user was Initialized
         let nc = NotificationCenter.default
         nc.addObserver(self,
-                       selector: #selector(self.DisplayPhoto),
+                       selector: #selector(self.PhotoRetrieved),
                        name: NSNotification.Name(rawValue: "PhotoRetrieved"),
                        object: nil)
         nc.addObserver(self,
@@ -106,24 +120,26 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         
         if !artist.uid.isEmpty {
             //We have an artist object
-            if artist.photos.count > 0 {
-                ActivityIndicator.startAnimating()
-            }
             userType = "artist"
+            print("Passed an artist object displaying to view")
             self.InitialFormatting()
             self.DisplayUserInfo()
-            
+            self.DisplayPhoto()
         } else if !venue.uid.isEmpty {
             //We have a venue
-            if venue.photos.count > 0 {
-                ActivityIndicator.startAnimating()
-            }
-            self.InitialFormatting()
+            print("Passed a venue object, displaying to view")
             userType = "venue"
+            self.InitialFormatting()
             self.DisplayUserInfo()
+            self.DisplayPhoto()
         } else {
             //We don't have either, retrieve one
-            self.DetermineUserType()
+            print("No existing user object detected, retrieving from database")
+            if Singleton.shared.type == "artist" {
+                self.artist.RetrieveArtistForUser(Singleton.shared.UID)
+            }else if Singleton.shared.type == "venue" {
+                self.venue.RetrieveVenueForUser(Singleton.shared.UID)
+            }
         }
         
         
@@ -141,9 +157,9 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
     @IBAction func btnNextPressed(_ sender: UIButton) {
         print("Next Pressed")
         self.Save()
-        if self.userType == "artist" {
+        if Singleton.shared.type == "artist" {
            performSegue(withIdentifier: "ArtistDashboard", sender: UIViewController.self)
-        }else if self.userType == "venue" {
+        }else if Singleton.shared.type == "venue" {
             performSegue(withIdentifier: "VenueDashboard", sender: UIViewController.self)
         }
         
@@ -222,10 +238,12 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         
         self.imgProfPic.image = image
         print("Saving photo")
-        if (self.userType == "artist"){
+        if (Singleton.shared.type == "artist"){
             artist.SavePhoto(image)
+            artist._img = image
         }else{
             venue.SavePhoto(image)
+            venue._img = image
         }
 
         dismiss(animated: true, completion: nil)
@@ -238,32 +256,6 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
 //
     
 //Initalization
-    func DetermineUserType(){
-        print("Determining User Type")
-        let UID = FIRAuth.auth()?.currentUser?.uid
-        if  UID != nil {
-            print("Log in found. Fetching data for UID ", "\(UID)")
-            //Check user tree for type of user
-            _Ref.child("users").child(UID!).observeSingleEvent(of: .value, with: { (snapshot) in
-                //print("Retrieved the below user and attributes:")
-                //print(snapshot.value)
-                if let val = (snapshot.value as AnyObject).value(forKey: "type"){
-                    self.userType = val as! String}
-                
-                if self.userType == "artist" {
-                    self.artist.RetrieveArtistForUser(UID!)
-                }else if self.userType == "venue" {
-                    self.venue.RetrieveVenueForUser(UID!)
-                }
-            }) { (error) in
-                print(error.localizedDescription)
-            }
-            //Attempt to fetch user from both venue and artist tree. Succesful notification will kick of the remaining neccesary load ing
-        }else{
-            //if No UID found in auth, push back to log in screen
-            print("No Logged in UID found, returning to log in screen")
-        }
-    }
     func ArtistWasInit(_ notification: Notification) {
         //Catches notification from user class
         if notification.userInfo!["success"] != nil  {
@@ -295,6 +287,21 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         if notification.userInfo!["success"] != nil  {
             print("User was initialized successfully on UserInfoVC")
             //The user was succesfully initalized, display the data to the user
+            //Check if the returned user has a photo, if so retrieve the first of their photos
+            if userType == "venue" {
+                if venue.photos.count > 0 {
+                    self.ActivityIndicator.startAnimating()
+                    venue.RetrievePhoto(venue.photos[0])
+                }
+            } else if userType == "artist" {
+                if artist.photos.count > 0 {
+                    self.ActivityIndicator.startAnimating()
+                    artist.RetrievePhoto(artist.photos[0])
+                }
+            }
+            
+            
+            
             self.DisplayUserInfo()
         }else{
             //Something went wrong
@@ -306,7 +313,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
 
     func Save() {
         //Called whenever editing on text box ends
-        if (self.userType == "artist"){
+        if (Singleton.shared.type == "artist"){
             print("Attempting to save artist info to database from UserInfoVC")
             //It's an artist, grab the data from the view and save it to the DB
             artist.name = txtName.text!
@@ -332,6 +339,12 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             }
             venue.lat = self.lat
             venue.lon = self.lon
+            venue.address = txtAddress.text!
+            venue.city = txtCity.text!
+            venue.state = txtState.text!
+            venue.zip = txtZip.text!
+            venue.phone = txtPhone.text!
+            
             venue.UpdateInDatabase()
         }
         
@@ -341,7 +354,7 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
 
     func DisplayUserInfo() {
         //Display whatever data is available
-        if self.userType == "artist" {
+        if Singleton.shared.type == "artist" {
             //Hide and unhide user type specific fields
             print("Displaying Artist info to view UserInfo")
             //It's an artist
@@ -352,16 +365,6 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             txtGenre.text = artist.genre
             txtArtistType.text = artist.type
             
-            if artist._img != nil {
-                imgProfPic.image = artist._img
-            } else {
-               // ActivityIndicator.startAnimating()
-               // FIRStorage.storage().reference(forURL: artist.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-                 //   let image = UIImage(data: data!)
-                 //   self.ActivityIndicator.stopAnimating()
-                 //   self.imgProfPic.image = image
-               // })
-            }
         }else{
             print("Displaying Venue info to view UserInfo")
             //Hide and unhide user specific views
@@ -374,28 +377,35 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
                 txtCapacity.text = String(venue.capacity)
             }
             txtAddress.text = venue.address
-            
-            if venue._img != nil {
-                imgProfPic.image = venue._img
-            } else {
-                //ActivityIndicator.startAnimating()
-              //  FIRStorage.storage().reference(forURL: venue.photos[0]).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-               //     let image = UIImage(data: data!)
-                //    self.ActivityIndicator.stopAnimating()
-                //    self.imgProfPic.image = image
-               // })
-            }
+           
+            txtCity.text = venue.city
+            txtState.text = venue.state
+            txtZip.text = venue.zip
+            txtPhone.text = venue.phone
+
         }
         
     }
     
+    func PhotoRetrieved(_ notification: Notification) {
+        //Catches notification from user class
+        if notification.userInfo!["success"] != nil  {
+            print("Photo retrieved successfully on UserInfoViewController")
+            ActivityIndicator.stopAnimating()
+            self.DisplayPhoto()
+        }else{
+            //Something went wrong
+            // print("Something went wrong with initializing the user")
+        }
+    }
+    
     func DisplayPhoto(){
+        //print("Photo retrieved notified")
         if venue._img != nil {
             imgProfPic.image = venue._img
         }else if artist._img != nil {
             imgProfPic.image = artist._img
         }
-        ActivityIndicator.stopAnimating()
     }
     
     
@@ -446,6 +456,8 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             return GenreTypes.count
         }else if pickerView.tag == 2 {
             return GenderTypes.count
+        }else if pickerView.tag == 3 {
+            return States.count
         }
         return 1
     }
@@ -456,6 +468,8 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             return GenreTypes[row]
         }else if pickerView.tag == 2 {
             return GenderTypes[row]
+        }else if pickerView.tag == 3 {
+            return States[row]
         }
         
         return ""
@@ -468,6 +482,8 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
             txtGenre.text = GenreTypes[row]
         }else if pickerView.tag == 2 {
             txtGender.text = GenderTypes[row]
+        }else if pickerView.tag == 3 {
+            txtState.text = States[row]
         }
     }
     
@@ -504,13 +520,14 @@ class UserInfoViewController: UIViewController, UITextViewDelegate, CLLocationMa
         self.imgProfPic.contentMode = .scaleAspectFill
         
         //Hide / Unhide Artist and Venue detail views
-        if self.userType == "artist" {
+        if Singleton.shared.type == "artist" {
             self.ArtistDetailView.isHidden = false
             self.VenueDetailView.isHidden = true
-            
+            self.AddressView.isHidden = true
         }else{
             self.ArtistDetailView.isHidden = true
             self.VenueDetailView.isHidden = false
+            self.AddressView.isHidden = false
         }
     }
        

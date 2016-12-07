@@ -14,11 +14,16 @@
 		5D398D211DDBAB5200A5EA57 /* GigMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D398D201DDBAB5200A5EA57 /* GigMapViewController.swift */; };
 		5D398D231DDCEABE00A5EA57 /* GigDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D398D221DDCEABE00A5EA57 /* GigDetailViewController.swift */; };
 		5D398D251DDD46F300A5EA57 /* GigCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D398D241DDD46F300A5EA57 /* GigCell.swift */; };
+		5D85D2581DE6079B00CABDCF /* Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85D2571DE6079B00CABDCF /* Offer.swift */; };
+		5D85D25A1DE610CD00CABDCF /* OfferViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85D2591DE610CD00CABDCF /* OfferViewController.swift */; };
+		5D85D25C1DEC83E700CABDCF /* ArtistGigDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85D25B1DEC83E700CABDCF /* ArtistGigDashboardViewController.swift */; };
+		5D85D25E1DEC978700CABDCF /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85D25D1DEC978700CABDCF /* Singleton.swift */; };
+		5D85D2601DEF452100CABDCF /* OfferCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85D25F1DEF452100CABDCF /* OfferCell.swift */; };
 		5D8F1E2C1DB974E500C53331 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2A1DB974E500C53331 /* Main.storyboard */; };
 		5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F1E2D1DBECC1400C53331 /* Artist.swift */; };
 		5DE965561DE34BA5003EBF2C /* Set.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965551DE34BA5003EBF2C /* Set.swift */; };
 		5DE965581DE35B5E003EBF2C /* SetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965571DE35B5E003EBF2C /* SetCell.swift */; };
-		5DE9655A1DE3C600003EBF2C /* VenueTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965591DE3C600003EBF2C /* VenueTabbar.swift */; };
+		5DE9655A1DE3C600003EBF2C /* UserTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE965591DE3C600003EBF2C /* UserTabbar.swift */; };
 		5DE9655C1DE4862B003EBF2C /* GigAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE9655B1DE4862B003EBF2C /* GigAnnotation.swift */; };
 		5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */; };
 		5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */; };
@@ -62,11 +67,16 @@
 		5D398D201DDBAB5200A5EA57 /* GigMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigMapViewController.swift; sourceTree = "<group>"; };
 		5D398D221DDCEABE00A5EA57 /* GigDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigDetailViewController.swift; sourceTree = "<group>"; };
 		5D398D241DDD46F300A5EA57 /* GigCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigCell.swift; sourceTree = "<group>"; };
+		5D85D2571DE6079B00CABDCF /* Offer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Offer.swift; sourceTree = "<group>"; };
+		5D85D2591DE610CD00CABDCF /* OfferViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfferViewController.swift; sourceTree = "<group>"; };
+		5D85D25B1DEC83E700CABDCF /* ArtistGigDashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistGigDashboardViewController.swift; sourceTree = "<group>"; };
+		5D85D25D1DEC978700CABDCF /* Singleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
+		5D85D25F1DEF452100CABDCF /* OfferCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfferCell.swift; sourceTree = "<group>"; };
 		5D8F1E2B1DB974E500C53331 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5D8F1E2D1DBECC1400C53331 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		5DE965551DE34BA5003EBF2C /* Set.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Set.swift; sourceTree = "<group>"; };
 		5DE965571DE35B5E003EBF2C /* SetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetCell.swift; sourceTree = "<group>"; };
-		5DE965591DE3C600003EBF2C /* VenueTabbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueTabbar.swift; sourceTree = "<group>"; };
+		5DE965591DE3C600003EBF2C /* UserTabbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserTabbar.swift; sourceTree = "<group>"; };
 		5DE9655B1DE4862B003EBF2C /* GigAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigAnnotation.swift; sourceTree = "<group>"; };
 		5DEFF1CA1DA56C4A00BC4F19 /* Opus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Opus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DEFF1CD1DA56C4A00BC4F19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -138,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				5DEFF2131DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift */,
+				5D85D25B1DEC83E700CABDCF /* ArtistGigDashboardViewController.swift */,
 				5D398D201DDBAB5200A5EA57 /* GigMapViewController.swift */,
 				5DE9655B1DE4862B003EBF2C /* GigAnnotation.swift */,
 			);
@@ -149,7 +160,6 @@
 			children = (
 				5D398D1A1DCBBC2200A5EA57 /* VenueDashboardViewController.swift */,
 				5D398D1E1DD77CA600A5EA57 /* VenueGigDashboardViewController.swift */,
-				5DE965591DE3C600003EBF2C /* VenueTabbar.swift */,
 				5D398D1C1DD1373D00A5EA57 /* GigEditViewController.swift */,
 				5DE965571DE35B5E003EBF2C /* SetCell.swift */,
 			);
@@ -214,8 +224,10 @@
 		5DEFF2001DAB0E4100BC4F19 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5D85D25D1DEC978700CABDCF /* Singleton.swift */,
 				5D398D161DCBAE4000A5EA57 /* Gig.swift */,
 				5DE965551DE34BA5003EBF2C /* Set.swift */,
+				5D85D2571DE6079B00CABDCF /* Offer.swift */,
 				5DEFF2101DAEBBC500BC4F19 /* KeychainWrapper.h */,
 				5DEFF2111DAEBBC500BC4F19 /* KeychainWrapper.m */,
 				5DEFF2051DAC7F1F00BC4F19 /* User.swift */,
@@ -229,10 +241,13 @@
 		5DEFF2011DAB0E5B00BC4F19 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5D85D25F1DEF452100CABDCF /* OfferCell.swift */,
+				5D85D2591DE610CD00CABDCF /* OfferViewController.swift */,
 				5D398D241DDD46F300A5EA57 /* GigCell.swift */,
 				5DEFF1CF1DA56C4A00BC4F19 /* MainViewController.swift */,
 				5DEFF20B1DAC93B400BC4F19 /* UserInfoViewController.swift */,
 				5D398D221DDCEABE00A5EA57 /* GigDetailViewController.swift */,
+				5DE965591DE3C600003EBF2C /* UserTabbar.swift */,
 				5D398D181DCBBBB800A5EA57 /* Artist */,
 				5D398D191DCBBBCA00A5EA57 /* Venue */,
 			);
@@ -533,19 +548,24 @@
 				5DEFF1D01DA56C4A00BC4F19 /* MainViewController.swift in Sources */,
 				5D398D1B1DCBBC2200A5EA57 /* VenueDashboardViewController.swift in Sources */,
 				5DFB1C5C1DC78F8600AD5BAC /* Venue.swift in Sources */,
+				5D85D2581DE6079B00CABDCF /* Offer.swift in Sources */,
 				5D398D231DDCEABE00A5EA57 /* GigDetailViewController.swift in Sources */,
 				5DEFF2141DAEC4DB00BC4F19 /* ArtistDashboardViewController.swift in Sources */,
 				5DE9655C1DE4862B003EBF2C /* GigAnnotation.swift in Sources */,
 				5DEFF1CE1DA56C4A00BC4F19 /* AppDelegate.swift in Sources */,
 				5DEFF2121DAEBBC500BC4F19 /* KeychainWrapper.m in Sources */,
+				5D85D25A1DE610CD00CABDCF /* OfferViewController.swift in Sources */,
 				5D398D1F1DD77CA600A5EA57 /* VenueGigDashboardViewController.swift in Sources */,
 				5D398D211DDBAB5200A5EA57 /* GigMapViewController.swift in Sources */,
 				5D398D1D1DD1373D00A5EA57 /* GigEditViewController.swift in Sources */,
+				5D85D25E1DEC978700CABDCF /* Singleton.swift in Sources */,
 				5DEFF20C1DAC93B400BC4F19 /* UserInfoViewController.swift in Sources */,
 				5D398D251DDD46F300A5EA57 /* GigCell.swift in Sources */,
+				5D85D25C1DEC83E700CABDCF /* ArtistGigDashboardViewController.swift in Sources */,
 				5DEFF2061DAC7F1F00BC4F19 /* User.swift in Sources */,
 				5D8F1E2E1DBECC1400C53331 /* Artist.swift in Sources */,
-				5DE9655A1DE3C600003EBF2C /* VenueTabbar.swift in Sources */,
+				5D85D2601DEF452100CABDCF /* OfferCell.swift in Sources */,
+				5DE9655A1DE3C600003EBF2C /* UserTabbar.swift in Sources */,
 				5DE965581DE35B5E003EBF2C /* SetCell.swift in Sources */,
 				5D398D171DCBAE4100A5EA57 /* Gig.swift in Sources */,
 			);

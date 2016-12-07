@@ -9,7 +9,9 @@
 import UIKit
 import Firebase
 
-class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
+
+
+class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet weak var txtRate: UITextField!
     @IBOutlet var lblError: UILabel!
@@ -32,6 +34,10 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
     @IBOutlet weak var SetTableView: UITableView!
     var gig: Gig = Gig()
     
+    let picker = UIImagePickerController()
+    
+    var venue: Venue! = Venue()
+    
     let cellReuseIdentifier = "setcell"
     
     let SetDurationPickerView = UIPickerView()
@@ -49,16 +55,9 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //Set default values
-        txtSetDuration.text = "45 Mins"
-        SetDurationRow = 3
-        txtGenre.text = "Any"
-        GenreRow = 0
+        InitialSetup()
         
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = DateFormatter.Style.medium
-        txtDate.text = dateFormatter.string(from: currentDate)
+        picker.delegate = self
         
         self.ScrollView.delaysContentTouches = true
         self.ScrollView.canCancelContentTouches = false
@@ -71,6 +70,8 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         let save = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(SetValues))
         
         navigationItem.rightBarButtonItems = [save]
+        
+        
         
         self.tabBarController?.tabBar.isHidden = true
         
@@ -93,6 +94,72 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         view.addGestureRecognizer(tap)
         // Do any additional setup after loading the view.
     }
+    
+    func InitialSetup() {
+        
+        //Make profile pic rounded
+        self.Image.layer.borderWidth = 1
+        self.Image.layer.masksToBounds = false
+        self.Image.layer.borderColor = UIColor.white.cgColor
+        self.Image.layer.cornerRadius = self.Image.frame.height/2
+        self.Image.layer.cornerRadius = self.Image.frame.width/2
+        self.Image.clipsToBounds = true
+        self.Image.contentMode = .scaleAspectFill
+        
+        //Check if we are editing an existing gig
+        if gig.gid.isEmpty {
+            //This is a new gig
+            //Check if the venue has an address and populate
+            if !venue.address.isEmpty { txtAddress.text = venue.address}
+            if !venue.city.isEmpty { txtCity.text = venue.city}
+            if !venue.state.isEmpty { txtState.text = venue.state}
+            if !venue.zip.isEmpty { txtZIP.text = venue.zip}
+            
+            //Set gig pic to default venue pic if available and also store url to that pic with gig
+           // if venue._img != nil {
+           //     gig._img = venue._img
+           //     self.Image.image = gig._img
+             //   gig.photoURL = venue.photos[0]
+           // }
+            
+            //Set default values
+            txtSetDuration.text = "45 Mins"
+            SetDurationRow = 3
+            txtGenre.text = "Any"
+            GenreRow = 0
+            
+        }else{
+            //This is an existing gig
+            txtName.text = gig.name
+            txtViewDescription.text = gig.description
+            txtAddress.text = gig.address
+            txtCity.text = gig.city
+            txtState.text = gig.state
+            txtZIP.text = gig.zip
+            txtPhone.text = gig.phone
+            //gig.sets = Int(txtSetNumber.text!)!
+            txtDate.text = gig.date
+            txtTime.text = gig.time
+            if gig._img != nil {
+                self.Image.image = gig._img
+            }
+        }
+        
+        
+        //Set default values
+        txtSetDuration.text = "45 Mins"
+        SetDurationRow = 3
+        txtGenre.text = "Any"
+        GenreRow = 0
+        
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        txtDate.text = dateFormatter.string(from: currentDate)
+        
+    }
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //Subscribe to observe the notification that that the user was Initialized
@@ -118,7 +185,7 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         NewSet.duration = txtSetDuration.text!
         NewSet.genre = txtGenre.text!
         NewSet.gid = self.gig.gid
-        
+       
         if !(txtRate.text?.isEmpty)! {
             NewSet.rate = Double(txtRate.text!)!
         }
@@ -129,6 +196,7 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
             txtTime.text = ""
             txtRate.text = ""
             self.SetTableView.reloadData()
+            dismissKeyboard()  
         }else{
             print(msg)
         }
@@ -137,8 +205,7 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
    
     @IBOutlet var btnDiscardPressed: UIButton!
     
-    @IBAction func btnSetPicturePressed(_ sender: UIButton) {
-    }
+    
 //DatePickers
     @IBAction func txtDateDidBeginEditing(_ sender: UITextField) {
         let datePickerView:UIDatePicker = UIDatePicker()
@@ -181,7 +248,8 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         cell.lblGenre.text = gig._sets[indexPath.row].genre
         cell.lblTime.text = gig._sets[indexPath.row].time
         cell.lblDuration.text = gig._sets[indexPath.row].duration
-        cell.lblRate.text = "$" + String(gig._sets[indexPath.row].rate)
+        
+        cell.lblRate.text = gig._sets[indexPath.row]._DisplayRate
         
         cell.lblSetNumber.text = "Set " + String(indexPath.row + 1)
         
@@ -242,7 +310,6 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         gig.date = txtDate.text!
         gig.time = txtTime.text!
         
-        
         //Calls an asynch conversion caught by a notifcation, if successful will call Save()
         gig.AddressToLatLon()
     }
@@ -262,6 +329,18 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
                 gig.CreateInDatabase()
             }
             gig.UpdateInDatabase()
+            
+            if gig._img != nil {
+                //If the gig already had a unique photo, delete it and save the new one in its place
+                if !gig.photoURL.isEmpty {
+                    gig.DeletePhoto(gig.photoURL)
+                }
+                gig.SavePhoto(gig._img!)
+            }
+            
+            DisplayError(message: "Gig saved succesfully!")
+            navigationController?.popViewController(animated: true)
+            
         }else {
             //Tell the user what is missing
             DisplayError(message: message)
@@ -375,6 +454,45 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
         })
 
     }
+//Photo Picker
+    
+    @IBAction func btnSetPicturePressed(_ sender: UIButton) {
+        print("Upload Gig photo pressed")
+        
+        //Check if user already has 3 photos
+        //if currentUser?.photos.count == currentUser!._PhotoLimit  {
+        //   print("User has uploaded the maximum amount of photos")
+        //}else{
+        picker.allowsEditing = false
+        picker.sourceType = .photoLibrary
+        present(picker, animated: true, completion: nil)
+        //}
+        
+    }
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        //Format image
+        //self.imgProfPic.contentMode = .ScaleAspectFit
+        //self.imgProfPic.layer.borderWidth = 1
+        //self.imgProfPic.layer.masksToBounds = false
+        //self.imgProfPic.layer.borderColor = UIColor.blackColor().CGColor
+        //self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.height/2
+        
+        self.Image.layer.cornerRadius = self.Image.frame.size.width / 2
+        self.Image.contentMode = .scaleAspectFill
+        gig._img = image
+        self.Image.image = image
+        
+        //print("Saving photo")
+        
+        
+        
+        dismiss(animated: true, completion: nil)
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+
+    
     
 //Keyboard Management
     @IBAction func textFieldDidEndEditing(_ sender: UITextField) {
@@ -444,8 +562,12 @@ class GigEditViewController: UIViewController, UIPickerViewDelegate, UITextViewD
     override func viewWillDisappear(_ animated: Bool) {
         //print("ViewWillDisappear for ArtistDashboard called")
         NotificationCenter.default.removeObserver(self)
+        print("Gigs venue has = " + String(venue._gigs.count))
         super.viewWillDisappear(animated)
     }
+    
+   
+    
     /*
     // MARK: - Navigation
 

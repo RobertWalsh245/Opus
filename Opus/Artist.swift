@@ -87,7 +87,9 @@ class Artist : User {
 
     }
     
-
+  
+    
+    
     override func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character
         //print("Converting to dict")

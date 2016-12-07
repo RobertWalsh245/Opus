@@ -27,40 +27,45 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         
+                
         GigTableView.delegate = self
         GigTableView.dataSource = self
         
-        navigationController?.navigationBar.barTintColor = UIColor.black
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        let backItem = UIBarButtonItem()
-        backItem.title = "Discard"
-        backItem.tintColor = UIColor.red
-        navigationItem.backBarButtonItem = backItem
-        
-        navigationController?.navigationBar.tintColor = UIColor.red
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        //self.navigationController?.isNavigationBarHidden = true
+        self.tabBarController?.tabBar.isHidden = false
         
         //Get venue object from tabbar property
-        if let tbc = self.tabBarController as? VenueTabbar {
-            self.venue = tbc.venue
+        if venue.uid.isEmpty {
+            if let tbc = self.tabBarController as? UserTabbar {
+                self.venue = tbc.venue
+            }
         }
-            self.venue.GetGigsForVID(VID: venue.uid)
+        
         
         //Check if the logged in user is the venue being diplayed
         let VID = FIRAuth.auth()?.currentUser?.uid
+        print("Logged in user is " + VID!)
+        print("Passed in vid  is " + venue.uid)
         if  VID == venue.uid {
             self.ViewOnly = false
         }else {
             self.ViewOnly = true
         }
         
-        self.InitialSetup()
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.isNavigationBarHidden = true
-        self.tabBarController?.tabBar.isHidden = false
         
+        //print(venue._gigs.count)
+        if venue._gigs.count == 0 {
+            self.venue.GetGigsForVID(VID: venue.uid, WithPhoto: true)
+        } else {
+            DisplayGigs()
+        }
+        
+        
+        self.InitialSetup()
        // let VID = FIRAuth.auth()?.currentUser?.uid
       //  if  VID != nil {
        //     self.venue.GetGigsForVID(VID: VID!)
@@ -72,8 +77,11 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
                        selector: #selector(self.GotGigs),
                        name: NSNotification.Name(rawValue: "GotGigsForVenue"),
                        object: nil)
-
-        
+        nc.addObserver(self,
+                       selector: #selector(self.GotGigPhoto),
+                       name: NSNotification.Name(rawValue: "GigPhotoRetrieved"),
+                       object: nil)
+       
     }
     
     override func didReceiveMemoryWarning() {
@@ -87,7 +95,18 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
        // let nextViewController = storyBoard.instantiateViewController(withIdentifier: "GigInfoViewController") as! GigInfoViewController
        // self.present(nextViewController, animated:true, completion:nil)
-        let controller = storyBoard.instantiateViewController(withIdentifier: "GigInfoViewController")
+        
+        //Navigation controller
+        navigationController?.navigationBar.barTintColor = UIColor.black
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        backItem.tintColor = UIColor.white
+        navigationItem.backBarButtonItem = backItem
+        navigationController?.navigationBar.tintColor = UIColor.white
+        let controller = storyBoard.instantiateViewController(withIdentifier: "GigEditViewController") as! GigEditViewController
+        
+        controller.venue = venue
         self.navigationController!.pushViewController(controller, animated: true)
         
     }
@@ -97,23 +116,52 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         
         if ViewOnly {
             btnNewGig.isHidden = true
+            self.navigationController?.isNavigationBarHidden = false
         } else {
             btnNewGig.isHidden = false
+            self.navigationController?.isNavigationBarHidden = true
         }
         
     }
     
 //TableView Methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return venue.gigs.count
+        return venue._gigs.count
     }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:GigCell = self.GigTableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as! GigCell
         
-        cell.lblName.text = venue.gigs[indexPath.row].name
-        cell.lblDate.text = venue.gigs[indexPath.row].date
-        cell.lblTime.text = venue.gigs[indexPath.row].time
+        let currGig = venue._gigs[indexPath.row]
+        
+        cell.imgPhoto.layer.borderWidth = 1
+        cell.imgPhoto.layer.masksToBounds = false
+        cell.imgPhoto.layer.borderColor = UIColor.white.cgColor
+        cell.imgPhoto.layer.cornerRadius = cell.imgPhoto.frame.height/2
+        cell.imgPhoto.layer.cornerRadius = cell.imgPhoto.frame.width/2
+        cell.imgPhoto.clipsToBounds = true
+        cell.imgPhoto.contentMode = .scaleAspectFill
+
+        
+        cell.lblName.text = currGig.name
+        cell.lblDate.text = currGig.date
+        cell.lblTime.text = currGig.time
+        
+        //Display the gig photo if we have it, if we dont display the venue photo if it has one AND we don't have a gig photo that is being loaded
+        if currGig._img != nil {
+            cell.imgPhoto.image = currGig._img
+        } else if venue._img != nil && currGig.photoURL.isEmpty {
+            cell.imgPhoto.image = venue._img
+        }
+        
+        let setCount = currGig._sets.count
+        if setCount == 1 {
+            cell.lblSets.text = String(setCount) + " Set"
+        }else if setCount > 1 {
+            cell.lblSets.text = String(setCount) + " Sets"
+        } else {
+            cell.lblSets.text = "No Sets"
+        }
         
         
         //cell.myView.backgroundColor = self.colors[indexPath.row]
@@ -122,21 +170,37 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
         return cell
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+   /* override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("Prepare for segue called")
         if(segue.identifier == "GigDetail") {
             let GigDetailVC = (segue.destination as! GigDetailViewController)
-            GigDetailVC.gig = venue.gigs[GigRow]
+            GigDetailVC.gig = venue._gigs[GigRow]
+            
+            
+            print("Venue Info on GigDashboard Vc")
+            print(venue.uid)
+            print(venue.name)
             
         }
-    }
+    } */
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //Set selected row to be used by prepare for segue to pass the right gig
         GigRow = indexPath.row
         
         //Segue to giginfo view and set the gig object
-        performSegue(withIdentifier: "GigDetail", sender: UIViewController.self)
+        //performSegue(withIdentifier: "GigDetail", sender: UIViewController.self)
+        
+        let DestinationVC = self.storyboard!.instantiateViewController(withIdentifier: "GigDetailViewContoller") as! GigDetailViewController
+        DestinationVC.gig = venue._gigs[indexPath.row]
+        DestinationVC.venue = venue
+        //let navController = UINavigationController(rootViewController: self)
+        
+        //self.present(self.navigationController, animated:true, completion: nil)
+        
+        self.navigationController?.pushViewController(DestinationVC, animated: true)
+        navigationController?.isNavigationBarHidden = false
+
         
         
     }
@@ -147,13 +211,31 @@ class VenueGigDashboardViewController: UIViewController, UITableViewDelegate, UI
     func GotGigs(_ notification: Notification) {
         //Catches notification from user class
         if notification.userInfo!["success"] != nil  {
-            print("Retrieved " + String(self.venue.gigs.count) + " gig(s) for the venue")
-            self.GigTableView.reloadData()
-            lblGigs.text = String(venue.gigs.count) + " Active Gigs"
+            print("Retrieved Gigs for venue on Venue Gig Dashboard")
+            DisplayGigs()
         }else{
             //Something went wrong
             print("Something went wrong retrieving the gigs for the venue")
         }
+    }
+    
+    func GotGigPhoto(_ notification: Notification) {
+        if notification.userInfo!["success"] != nil  {
+            print("Retrieved Gig Photo for gig on Venue Gig Dashboard")
+            GigTableView.reloadData()
+        }else{
+            //Something went wrong
+            print("Something went wrong retrieving the gig photo")
+        }
+
+        
+    }
+    
+    func DisplayGigs() {
+        self.GigTableView.reloadData()
+        
+        
+        lblGigs.text = String(venue._gigs.count) + " Active Gig(s)"
     }
     
     deinit {

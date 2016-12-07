@@ -1,40 +1,33 @@
 //
-//  GigCell.swift
+//  OfferCell.swift
 //  Opus
 //
-//  Created by Rob on 11/16/16.
+//  Created by Rob on 11/30/16.
 //  Copyright © 2016 RobMWalsh. All rights reserved.
 //
 
 import UIKit
 
-class GigCell: UITableViewCell {
-    
-    @IBOutlet weak var myView: UIView!
-    @IBOutlet weak var myCellLabel: UILabel!
-    
-    @IBOutlet weak var lblSets: UILabel!
-    @IBOutlet weak var lblName: UILabel!
+class OfferCell: UITableViewCell {
+
+    @IBOutlet weak var lblFrom: UILabel!
+    @IBOutlet weak var lblTo: UILabel!
     @IBOutlet weak var lblDate: UILabel!
     @IBOutlet weak var lblTime: UILabel!
-    @IBOutlet weak var imgPhoto: UIImageView!
+    @IBOutlet weak var lblRate: UILabel!
+    @IBOutlet weak var lblDuration: UILabel!
     
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
-        self.imgPhoto.layer.cornerRadius = self.imgPhoto.frame.size.width / 2
-        self.imgPhoto.contentMode = .scaleAspectFill
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-        
-        
     }
 
 }

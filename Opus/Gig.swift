@@ -39,7 +39,7 @@ class Gig {
     var lat: Double = 0.0
     var lon: Double = 0.0
     
-    
+    var _img: UIImage?
     var _sets: [Set] = []
     
     
@@ -131,14 +131,12 @@ class Gig {
             self.lon = (val as! Double)}
         
         self.GetSetsForGID(GID: self.gid)
+        //self.RetrievePhoto(self.photoURL)
         
     }
     //var rate: Double = 0.0
     
     func CreateInDatabase(){
-        
-        
-        
         //Generate a unique id for the gig and set it as the GID
         let NewGigRef = _GigRef.childByAutoId()
         self.gid = NewGigRef.key
@@ -196,7 +194,7 @@ class Gig {
     }
     
     func GetSetsForGID(GID: String) {
-        print("Retrieving Sets for GID " + GID)
+        //print("Retrieving Sets for GID " + GID)
         //Clear out current gig array for venue
         self._sets.removeAll()
         
@@ -208,6 +206,8 @@ class Gig {
         
         //Query the gig tree for all gigs with a VID matching this Venue
         queryRef.observe(.value, with: { snapshot in
+            //Clear out current gig array for venue
+            self._sets.removeAll()
             
             //Takes each snapshot of a gig and converts it into a dictionary, then passes to a gig object for the values to be set and adds to the array
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
@@ -238,7 +238,84 @@ class Gig {
         
         
     }
+    
+    func SavePhoto(_ image: UIImage){
+        
+            //Make sure we have a gID
+        if(!gid.isEmpty){
+            var data = Data()
+            data = UIImageJPEGRepresentation(image, 0.8)!
+            // set upload path
+            let filePath = "\(gid)/\("image")"
+                
+            //print(filePath)
+            let metaData = FIRStorageMetadata()
+            metaData.contentType = "image/jpg"
+                
+            self._StorageRef.child(filePath).put(data, metadata: metaData){(metaData,error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }else{
+                    print("Saved gig photo successfully")
+                    //store downloadURL
+                    let downloadURL = metaData!.downloadURL()!.absoluteString
+                    //store downloadURL in Photo URL array
+                    self.photoURL = downloadURL
+                    let NewPhotoRef = self._GigRef.child(self.gid)
+                    //Set the Value in DB
+                    NewPhotoRef.updateChildValues(["photoURL" : self.photoURL])
 
+                }
+                    
+            }
+                
+        }
+            
+        
+        
+    }
+
+    func RetrievePhoto(_ URL: String) {
+        
+        if !URL.isEmpty {
+            print("Retrieving Gig photo from URL" + URL)
+            FIRStorage.storage().reference(forURL: URL).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
+                
+                if data != nil {
+                    self._img = UIImage(data: data!)
+                
+                    let nc = NotificationCenter.default
+                    nc.post(name: Notification.Name(rawValue: "GigPhotoRetrieved"),
+                        object: nil,
+                        userInfo: ["success": true])
+                }
+                
+            })
+
+        }
+        
+    }
+    
+   func DeletePhoto(_ URL: String) {
+        print("Deleting Gig photo from URL" + URL)
+        // Delete the file
+        FIRStorage.storage().reference(forURL: URL).delete { (error) -> Void in
+            if (error != nil) {
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "GigPhotoDeleted"),
+                    object: nil,
+                    userInfo: nil)
+            } else {
+                // File deleted successfully
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "GigPhotoDeleted"),
+                    object: nil,
+                    userInfo: ["success": true])
+            }
+        }
+    
+    }
     
     func AddressToLatLon () {
         let Fulladdress = self.address + ", " + city + ", " + state + ", " + zip

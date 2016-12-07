@@ -8,8 +8,8 @@
 
 import UIKit
 
-class VenueTabbar: UITabBarController {
+class UserTabbar: UITabBarController {
 
     var venue: Venue! = Venue()
-
+    var artist: Artist! = Artist()
 }

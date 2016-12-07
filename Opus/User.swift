@@ -21,31 +21,12 @@ class User {
     //A reference to the storage buckets within firebase
     fileprivate var _StorageRef = FIRStorage.storage().reference(forURL: "gs://opus-f0c01.appspot.com")
     var _UserRef = FIRDatabase.database().reference().child("users")
-    
+    var _OfferRef = FIRDatabase.database().reference().child("offers")
     let _PhotoLimit = 3
     
     //? denotes an optional as in not required at initalization of object, will be set to nil
     var uid: String = ""
-    var accountcomplete: Bool {
-        get {
-            //Determine if user has completed all neccesary inputs
-            var Complete = true
-            let UserDict = self.toDict()
-            
-            //Loop dictionary of all properties and check their value
-            for (key, value) in UserDict {
-                //print(key, value)
-                if value as? String == "" {
-                    Complete = false
-                }
-            }
-            print("Account complete = ", "\(Complete)" )
-            return Complete
-        }
-       set(newValue) {
-            //self.accountcomplete = newValue
-        }
-    }
+    var accountcomplete: Bool = false
     var name: String = ""
     var email: String = ""
     var bio: String = ""
@@ -54,6 +35,8 @@ class User {
     var lon: Double = 0.0
     var photos: [String] = []
     var _img: UIImage?
+    var _gigs: [Gig] = []
+    var _offers: [Offer] = []
     
     
     //Potential Methods
@@ -93,6 +76,9 @@ class User {
             if let val = (snapshot.value as AnyObject).value(forKey: "photos"){
                 self.photos = (val as! Array <String>)}
             
+           // if self.photos.count > 0 {
+            //    self.RetrievePhoto(self.photos[0])
+           // }
             
             //Post notification that the user was initalized from the database succesfully, include the user info success message
             let nc = NotificationCenter.default
@@ -209,21 +195,44 @@ class User {
     }
     
     func RetrievePhoto(_ URL: String) {
-        print("Retrieving photo from URL" + URL)
+        print("Retrieving User photo from URL" + URL)
         FIRStorage.storage().reference(forURL: URL).data(withMaxSize: 25 * 1024 * 1024, completion: { (data, error) -> Void in
-             self._img = UIImage(data: data!)
             
-            let nc = NotificationCenter.default
-            nc.post(name: Notification.Name(rawValue: "PhotoRetrieved"),
+            if data != nil {
+                self._img = UIImage(data: data!)
+            
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "PhotoRetrieved"),
                     object: nil,
                     userInfo: ["success": true])
+            }
+            
         }) 
         
     }
     
+    func DeletePhoto(_ URL: String) {
+        print("Deleting user photo from URL" + URL)
+        // Delete the file
+        FIRStorage.storage().reference(forURL: URL).delete { (error) -> Void in
+            if (error != nil) {
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "UserPhotoDeleted"),
+                        object: nil,
+                        userInfo: nil)
+            } else {
+                // File deleted successfully
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "UserPhotoDeleted"),
+                        object: nil,
+                        userInfo: ["success": true])
+            }
+        }
+        
+    }
 
     
-    func GetUserType(){
+    func GetUserType() {
         print("Determining User Type")
         var type = ""
         let UID = FIRAuth.auth()?.currentUser?.uid
@@ -262,6 +271,43 @@ class User {
             //if No UID found in auth, push back to log in screen
             print("No Logged in UID found")
         }
+    }
+    
+  
+    
+    func GetOffers() {
+        print("Retrieving Offers associated with the user " + uid)
+        self._offers.removeAll()
+        
+        _UserRef.child(self.uid).child("offers").observe(.value, with: { (snapshot) in
+            
+            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                for snap in snapshots {
+                    print(snapshots.count)
+                    print(snap.key)
+                    let offer = Offer()
+                    offer.RetrieveWithID(snap.key)
+                    self._offers.append(offer)
+                }
+            }
+
+            
+            
+            //Post notification that the user was initalized from the database succesfully, include the user info success message
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "GotOffers"),
+                    object: nil,
+                    userInfo: ["success": true])
+        }) { (error) in
+            print(error.localizedDescription)
+            //Post notification that the user was initalized from the database succesfully, don't include the success message
+            let nc = NotificationCenter.default
+            nc.post(name: Notification.Name(rawValue: "GotOffers"),
+                    object: nil,
+                    userInfo: nil)
+        }
+
+        
     }
 
     

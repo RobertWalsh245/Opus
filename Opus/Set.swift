@@ -21,7 +21,17 @@ class Set {
     var rate: Double = 0.0
     var gid: String = ""
     var aid: String = ""
-
+    var _DisplayRate: String {
+        get {
+            let currencyFormatter = NumberFormatter()
+            currencyFormatter.usesGroupingSeparator = true
+            currencyFormatter.numberStyle = NumberFormatter.Style.currency
+            // localize to your grouping and decimal separator
+            currencyFormatter.locale = NSLocale.current
+            let rateString = currencyFormatter.string(from: NSNumber(value: self.rate))
+            return rateString!
+        }
+    }
 
     func RetrieveWithID (_ sid: String) {
         
@@ -44,6 +54,7 @@ class Set {
                 self.rate = (val as! Double)}
             if let val = (snapshot.value as AnyObject).value(forKey: "time"){
                 self.time = (val as! String)}
+            
             
             //Post notification that the user was initalized from the database succesfully, include the user info success message
             let nc = NotificationCenter.default
@@ -91,7 +102,7 @@ class Set {
         if(!self.sid.isEmpty && self.rate >= 0 && !self.gid.isEmpty && !self.time.isEmpty && !self.genre.isEmpty){
             //Place attributes in dict to be passed to Firebase
             //let UserDict = [Any?]()
-            let SetDict: [String: Any] =  [
+            let SetDict: [String: Any] =  ["sid": self.sid,
                                            "gid": self.gid,
                                            "time": self.time,
                                            "rate": self.rate,

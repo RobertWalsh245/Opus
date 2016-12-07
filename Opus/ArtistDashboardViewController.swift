@@ -58,16 +58,7 @@ class ArtistDashboardViewController: UIViewController {
         
         
     }
-    deinit {
-        print("Deinit for ArtistDashboard called")
-        //Removes listener of Notifications when de init
-        NotificationCenter.default.removeObserver(self)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        print("ViewWillDisappear for ArtistDashboard called")
-        NotificationCenter.default.removeObserver(self)
-        super.viewWillDisappear(animated)
-    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         lblBio.text = ""
@@ -82,7 +73,10 @@ class ArtistDashboardViewController: UIViewController {
         
         //Do any additional setup after loading the view.
         
-        
+        //Set tabbar artist property
+        if let tbc = self.tabBarController as? UserTabbar {
+            tbc.artist = self.artist
+        }
 
 
     }
@@ -115,9 +109,14 @@ class ArtistDashboardViewController: UIViewController {
         if notification.userInfo!["success"] != nil  {
             print("User was initialized successfully on ArtistDashboard")
             //The user was succesfully initalized, display the data to the user
+            //Set tabbar shared artist object
+            if let tbc = self.tabBarController as? UserTabbar {
+                tbc.artist = self.artist
+            }
+            
             //Call to retrieve the photo for the artist
             
-            if artist.photos.count > 0 {
+            if artist.photos.count > 0 && artist._img == nil {
                 self.ActivityIndicator.startAnimating()
                 artist.RetrievePhoto(artist.photos[0])
             }
@@ -167,9 +166,29 @@ class ArtistDashboardViewController: UIViewController {
         self.imgProfPic.layer.cornerRadius = self.imgProfPic.frame.size.width / 2
         self.imgProfPic.contentMode = .scaleAspectFill
         self.ActivityIndicator.stopAnimating()
-        self.imgProfPic.image = artist._img
+        
+        if artist._img != nil {
+            self.imgProfPic.image = artist._img
+        }else{
+            //display default photo
+        }
+        
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        print("ViewWillDisappear for ArtistDashboard called")
+        //NotificationCenter.default.removeObserver(self)
+        //Set tabbar artist property
+        if let tbc = self.tabBarController as? UserTabbar {
+            tbc.artist = self.artist
+        }
+        super.viewWillDisappear(animated)
+    }
+    deinit {
+        print("Deinit for ArtistDashboard called")
+        //Removes listener of Notifications when de init
+        NotificationCenter.default.removeObserver(self)
+    }
     //Calls this function when the tap is recognized.
     func dismissKeyboard() {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.

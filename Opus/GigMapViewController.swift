@@ -39,14 +39,25 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate, MKMapVi
         //When false Updating locations will center the map to the current lat lon
         InitialLocSet = false
         mapView.delegate = self
-        
         mapView.showsUserLocation = true
+        
+        //Navigation controller
+        navigationController?.navigationBar.barTintColor = UIColor.black
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        backItem.tintColor = UIColor.white
+        navigationItem.backBarButtonItem = backItem
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.isNavigationBarHidden = true
+        
+        GetGigs()
         
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
         
-        GetGigs()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
@@ -98,7 +109,7 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate, MKMapVi
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("Annotation selected")
-        
+        //Called when an annotation is selected on the map
         if let annotation = view.annotation as? GigAnnotation {
             print("Your annotation title: " + annotation.title!)
             selectedAnnotation = annotation
@@ -107,11 +118,21 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate, MKMapVi
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        //Called when the info button is tapped on the annotation
         if control == view.rightCalloutAccessoryView {
             //selectedAnnotation = view.annotation as! GigAnnotation!
             print("Annotation button tapped")
             
-            performSegue(withIdentifier: "MapToVenue", sender: UIViewController.self)
+            
+            let DestinationVC = self.storyboard!.instantiateViewController(withIdentifier: "VenueDashboard") as! VenueDashboardViewController
+            DestinationVC.VIDForLoad = selectedAnnotation.vid
+            //let navController = UINavigationController(rootViewController: self)
+            
+            //self.present(self.navigationController, animated:true, completion: nil)
+            
+            self.navigationController?.pushViewController(DestinationVC, animated: true)
+            navigationController?.isNavigationBarHidden = false
+           // performSegue(withIdentifier: "MapToVenue", sender: UIViewController.self)
         }
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -122,9 +143,17 @@ class GigMapViewController: UIViewController, CLLocationManagerDelegate, MKMapVi
             //let navVc = tabVc.viewControllers!.first as! UINavigationController
            // let VenueVc = navVc.viewControllers.first as! VenueDashboardViewController
             
-            let tabCtrl = segue.destination as! UITabBarController
-            let destinationVC = tabCtrl.viewControllers![0] as! VenueDashboardViewController
-            destinationVC.VIDForLoad = selectedAnnotation.vid
+           // let DestinationVC = (segue.destination as! VenueDashboardViewController)
+           // let navVc = DestinationVC.first as! UINavigationController
+            
+           
+            
+            
+            
+            //let tabCtrl = segue.destination as! UITabBarController
+            //let destinationVC = tabCtrl.viewControllers![0] as! VenueDashboardViewController
+            //let DestinationVC = (segue.destination.navigationController?.topViewController as! VenueDashboardViewController)
+            //DestinationVC.VIDForLoad = selectedAnnotation.vid
         }
     }
     

@@ -16,7 +16,11 @@ class Venue : User {
     //NOTE All properties that are not to be saved to firebase must be prefaced with a _ character
     var address: String = ""
     var capacity: Int = 0
-    var gigs: [Gig] = []
+    
+    var city: String = ""
+    var state: String = ""
+    var zip: String = ""
+    var phone: String = ""
     
     var _GigRef = FIRDatabase.database().reference().child("gigs")
     
@@ -56,6 +60,14 @@ class Venue : User {
                     self.address = val as! String}
                 if let val = (snapshot.value as AnyObject).value(forKey: "capacity"){
                     self.capacity = (val as! Int)}
+                if let val = (snapshot.value as AnyObject).value(forKey: "city"){
+                    self.city = (val as! String)}
+                if let val = (snapshot.value as AnyObject).value(forKey: "state"){
+                    self.state = (val as! String)}
+                if let val = (snapshot.value as AnyObject).value(forKey: "zip"){
+                    self.zip = (val as! String)}
+                if let val = (snapshot.value as AnyObject).value(forKey: "phone"){
+                    self.phone = (val as! String)}
             
                 //Post notification that the user was initalized from the database succesfully, include the user info success message
                 let nc = NotificationCenter.default
@@ -78,10 +90,9 @@ class Venue : User {
         
     }
 
-    func GetGigsForVID(VID: String) {
+    func GetGigsForVID(VID: String, WithPhoto: Bool) {
         print("Retrieving Gigs for VID " + VID)
-        //Clear out current gig array for venue
-        self.gigs.removeAll()
+        
         
         let queryRef = _GigRef.queryOrdered(byChild: "vid").queryEqual(toValue: VID)
         
@@ -89,16 +100,22 @@ class Venue : User {
             //.observe(.childAdded, with:
         
         
-        //Query the gig tree for all gigs with a VID matching this Venue
+        //Query the gig tree for all gigs with a VID matching this Venue. is an active listener
         queryRef.observe(.value, with: { snapshot in
-            
+            //Clear out current gig array for venue
+            self._gigs.removeAll()
                 //Takes each snapshot of a gig and converts it into a dictionary, then passes to a gig object for the values to be set and adds to the array
                 if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
                     for snap in snapshots {
                         if let gigDict = snap.value as? Dictionary<String, AnyObject> {
                             let gig = Gig()
                             gig.setValuesForKeysWithDictionary(dict: gigDict)
-                            self.gigs.append(gig)
+                            if WithPhoto {
+                                if !gig.photoURL.isEmpty{
+                                    gig.RetrievePhoto(gig.photoURL)
+                                }
+                            }
+                            self._gigs.append(gig)
                         }
                     }
                 }
@@ -140,8 +157,6 @@ class Venue : User {
 
     }
     
-    
-
     
     override func toDict() -> [String:AnyObject] {
         //Converts all properties to dictionary, excludes any with a leading "_" character
